@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GRIT — From Job Goal to Job Capability</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F5F1;
+  --card:#FFFFFF;
+  --navy:#1F2033;
+  --navy-2:#2C2E48;
+  --lime:#B7F34A;
+  --lime-2:#9FE02E;
+  --purple:#7C5CFC;
+  --dark:#101418;
+  --text-2:#6E7080;
+  --text-3:#A1A3B0;
+  --border:#EAE8E1;
+  --track:#EFEDE6;
+  --white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:#E7E5DE;}
+body{
+  font-family:'Inter',sans-serif;color:var(--navy);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:28px 12px 60px;
+}
+h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;}
+
+.toolbar{width:100%;max-width:900px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:18px;}
+.toolbar button{font-family:'Inter';font-size:11px;color:var(--text-2);background:#fff;border:1px solid var(--border);padding:6px 10px;border-radius:8px;cursor:pointer;}
+.toolbar button:hover{border-color:var(--navy);color:var(--navy);}
+.toolbar-label{font-size:11px;color:var(--text-3);align-self:center;margin-right:4px;}
+
+.device{width:474px;padding:14px;border-radius:66px;background:linear-gradient(160deg,#2b2c3a,#101018 60%);box-shadow:0 40px 100px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.08);}
+.screen-frame{position:relative;width:440px;height:956px;background:var(--bg);border-radius:54px;overflow:hidden;box-shadow:inset 0 0 0 2px rgba(0,0,0,.04);}
+.island{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:126px;height:37px;background:#000;border-radius:20px;z-index:50;}
+.statusbar{position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 10px;z-index:40;font-size:15px;font-weight:600;color:var(--navy);pointer-events:none;}
+.statusbar .icons{display:flex;gap:6px;align-items:center;}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(31,32,51,.35);z-index:50;}
+
+.screen{position:absolute;inset:0;display:none;flex-direction:column;padding-top:62px;animation:fadein .25s ease;}
+.screen.active{display:flex;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.scroll{flex:1;overflow-y:auto;padding:16px 20px 116px;}
+.scroll::-webkit-scrollbar{display:none;}
+
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 4px;}
+.brand{display:flex;align-items:center;gap:8px;cursor:pointer;}
+.brand .mark{width:30px;height:30px;border-radius:9px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans';font-weight:800;font-size:14px;color:var(--lime);}
+.brand .word{font-family:'Plus Jakarta Sans';font-weight:800;font-size:17px;}
+.header-actions{display:flex;gap:10px;align-items:center;}
+.icon-btn{width:36px;height:36px;border-radius:11px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;}
+.icon-btn .dot{position:absolute;top:7px;right:7px;width:6px;height:6px;border-radius:50%;background:var(--purple);}
+.avatar{width:36px;height:36px;border-radius:11px;background:var(--navy);color:var(--lime);display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans';font-weight:700;font-size:14px;cursor:pointer;overflow:hidden;}
+
+.sub-header{display:flex;align-items:center;gap:12px;padding:14px 20px 8px;}
+.back-btn{width:36px;height:36px;border-radius:11px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.sub-title{font-family:'Plus Jakarta Sans';font-weight:700;font-size:16px;}
+
+.bottom-nav{position:absolute;left:0;right:0;bottom:0;height:86px;padding-bottom:22px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:30;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--text-3);cursor:pointer;font-size:10.5px;font-weight:600;width:58px;}
+.nav-item svg{width:20px;height:20px;stroke:var(--text-3);fill:none;stroke-width:1.9;}
+.nav-item .ic-wrap{width:34px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:9px;}
+.nav-item.active{color:var(--navy);}
+.nav-item.active svg{stroke:var(--navy);}
+.nav-item.active .ic-wrap{background:var(--lime);}
+.fab{position:absolute;right:18px;bottom:104px;z-index:35;width:52px;height:52px;border-radius:16px;background:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 24px rgba(31,32,51,.35);}
+.fab svg{width:22px;height:22px;stroke:var(--lime);fill:none;stroke-width:2;}
+
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(31,32,51,.03);}
+.card + .card{margin-top:14px;}
+.card-navy{background:var(--navy);color:#fff;border:none;}
+.card-navy .muted, .card-navy .small-muted{color:rgba(255,255,255,.65);}
+
+.progress-track{width:100%;height:8px;border-radius:5px;background:var(--track);overflow:hidden;}
+.progress-fill{height:100%;border-radius:5px;background:var(--lime);}
+
+.ring-wrap{position:relative;width:112px;height:112px;margin:0 auto;}
+.ring-bg{position:absolute;inset:0;border-radius:50%;}
+.ring-hole{position:absolute;inset:11px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-hole b{font-size:22px;font-family:'Plus Jakarta Sans';font-weight:800;}
+.ring-hole span{font-size:10px;color:var(--text-3);font-weight:600;}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 18px;border-radius:14px;font-family:'Plus Jakarta Sans';font-weight:700;font-size:14.5px;cursor:pointer;border:none;width:100%;}
+.btn-primary{background:var(--lime);color:var(--navy);}
+.btn-secondary{background:var(--navy);color:#fff;}
+.btn-ghost{background:transparent;color:var(--text-2);border:1px solid var(--border);}
+
+.tag{font-size:11px;font-weight:600;padding:5px 9px;border-radius:8px;background:var(--track);color:var(--text-2);}
+.tag.diff-Easy{color:#4C8B2B;background:#E7F5D6;}
+.tag.diff-Medium{color:#8A6300;background:#FBF0CC;}
+.tag.diff-Hard{color:#8A2A4E;background:#FAE1EA;}
+
+.row{display:flex;align-items:center;justify-content:space-between;}
+.section-title{font-size:16px;font-weight:700;font-family:'Plus Jakarta Sans';margin-bottom:12px;}
+.muted{color:var(--text-2);font-size:13.5px;line-height:1.5;}
+.small-muted{color:var(--text-3);font-size:12px;}
+
+.dot-nav{display:flex;gap:6px;justify-content:center;margin:18px 0;}
+.dot-nav span{width:6px;height:6px;border-radius:50%;background:var(--track);}
+.dot-nav span.on{width:20px;border-radius:4px;background:var(--lime);}
+
+.chip{display:flex;align-items:center;gap:6px;padding:9px 13px;border-radius:11px;background:var(--card);border:1px solid var(--border);font-size:12.5px;font-weight:600;}
+
+.skill-row{padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.skill-row:last-child{border-bottom:none;}
+.skill-head{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13.5px;font-weight:600;}
+
+.m-card{cursor:pointer;}
+.m-scenario{font-size:12.5px;color:var(--text-2);line-height:1.5;margin:8px 0 12px;padding:10px 12px;background:var(--bg);border-radius:11px;border-left:3px solid var(--purple);}
+.skill-pills{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px;}
+
+.tab-row{display:flex;gap:20px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.tab-item{padding-bottom:10px;font-size:13.5px;font-weight:700;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;}
+.tab-item.active{color:var(--navy);border-color:var(--lime);}
+
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:2px 0 16px;}
+.filter-row::-webkit-scrollbar{display:none;}
+.filter-pill{flex:none;padding:8px 14px;border-radius:20px;font-size:12.5px;font-weight:600;background:var(--card);color:var(--text-2);border:1px solid var(--border);cursor:pointer;}
+.filter-pill.active{background:var(--navy);color:var(--lime);border:none;}
+
+.upload-box{border:1.5px dashed var(--border);border-radius:14px;padding:18px;text-align:left;color:var(--text-2);font-size:12.5px;margin:12px 0;display:flex;align-items:center;justify-content:space-between;background:var(--bg);}
+textarea.answer-box{width:100%;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--navy);font-family:'Inter';font-size:13px;min-height:100px;resize:none;}
+textarea.answer-box::placeholder{color:var(--text-3);}
+.editor-toolbar{display:flex;gap:10px;padding:10px 2px 0;color:var(--text-3);font-size:13px;font-weight:700;}
+
+.chat-bubble{max-width:82%;padding:12px 14px;border-radius:16px;font-size:13px;line-height:1.5;margin-bottom:10px;}
+.chat-ai{background:var(--card);border:1px solid var(--border);border-bottom-left-radius:4px;}
+.chat-user{background:var(--navy);color:var(--lime);font-weight:600;margin-left:auto;border-bottom-right-radius:4px;}
+.chat-list{display:flex;flex-direction:column;}
+.mascot{width:36px;height:36px;flex:none;}
+
+.badge{border-radius:16px;display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);padding:12px 14px;}
+.badge-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--track);}
+.badge.unlocked .badge-icon{background:var(--lime);}
+.badge svg{width:20px;height:20px;stroke:var(--text-3);fill:none;stroke-width:1.8;}
+.badge.unlocked svg{stroke:var(--navy);}
+
+.list-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.list-item:last-child{border-bottom:none;}
+.list-item .li-left{display:flex;align-items:center;gap:12px;}
+.li-icon{width:38px;height:38px;border-radius:11px;background:var(--track);display:flex;align-items:center;justify-content:center;}
+.li-icon svg{width:18px;height:18px;stroke:var(--navy);fill:none;stroke-width:1.8;}
+
+hr.sep{border:none;border-top:1px solid var(--border);margin:16px 0;}
+.toggle-row{display:flex;background:var(--track);border-radius:12px;padding:4px;}
+.toggle-opt{flex:1;text-align:center;padding:9px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--text-2);}
+.toggle-opt.active{background:var(--card);color:var(--navy);box-shadow:0 2px 6px rgba(31,32,51,.08);}
+.plan-card{border:1.5px solid var(--border);border-radius:18px;padding:18px;flex:1;}
+.plan-card.pro{border-color:var(--purple);background:#F8F5FF;position:relative;}
+.plan-feature{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);margin-top:8px;}
+</style>
+</head>
+<body>
+
+<div class="toolbar" id="toolbar"></div>
+
+<div class="device">
+  <div class="screen-frame" id="frame">
+    <div class="island"></div>
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11"><rect x="0" y="6" width="3" height="5" rx="0.5" fill="#1F2033"/><rect x="4.5" y="4" width="3" height="7" rx="0.5" fill="#1F2033"/><rect x="9" y="2" width="3" height="9" rx="0.5" fill="#1F2033"/><rect x="13.5" y="0" width="3" height="11" rx="0.5" fill="#1F2033"/></svg>
+        <svg width="24" height="11" viewBox="0 0 24 11"><rect x="0.5" y="0.5" width="21" height="10" rx="2.5" stroke="#1F2033" opacity=".5"/><rect x="2" y="2" width="14" height="7" rx="1.3" fill="#1F2033"/><rect x="22.3" y="3.3" width="1.4" height="4.4" rx="0.7" fill="#1F2033" opacity=".5"/></svg>
+      </span>
+    </div>
+
+    <!-- ============ SPLASH / ONBOARDING ============ -->
+    <div class="screen active" id="splash">
+      <div class="scroll" style="justify-content:center;display:flex;flex-direction:column;padding-top:0;align-items:center;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+          <svg width="30" height="30" viewBox="0 0 30 30"><rect width="30" height="30" rx="9" fill="#1F2033"/><path d="M9 15a6 6 0 1 1 6 6" stroke="#B7F34A" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+          <span style="font-family:'Plus Jakarta Sans';font-weight:800;font-size:24px;letter-spacing:.5px;">GRIT</span>
+        </div>
+        <div class="small-muted" style="letter-spacing:.08em;text-transform:uppercase;font-weight:700;font-size:10px;margin-bottom:26px;">From job goal to job capability</div>
+        <div id="mascot-big" style="margin-bottom:26px;"></div>
+        <h1 style="font-size:22px;font-weight:800;text-align:center;line-height:1.3;padding:0 24px;">Turn your career goal into real capability</h1>
+        <p class="muted" style="text-align:center;padding:0 30px;margin-top:10px;">Learn, practice, and prove you're ready for the job you want.</p>
+        <div class="dot-nav"><span class="on"></span><span></span><span></span><span></span></div>
+      </div>
+      <div style="padding:0 20px 34px;">
+        <button class="btn btn-primary" onclick="enterApp()">Get Started</button>
+        <button class="btn btn-ghost" style="margin-top:10px;">Log In</button>
+      </div>
+    </div>
+
+    <!-- ============ HOME ============ -->
+    <div class="screen" id="home">
+      <div class="app-header">
+        <div class="brand" onclick="go('home')"><div class="mark">G</div><div class="word">GRIT</div></div>
+        <div class="header-actions">
+          <div class="icon-btn" onclick="go('notif')"><span class="dot"></span><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--navy)" fill="none" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+          <div class="avatar" onclick="go('profile')">A</div>
+        </div>
+      </div>
+      <div class="scroll">
+        <h1 style="font-size:21px;font-weight:800;margin-bottom:2px;">Hi, Angela.</h1>
+        <p class="muted" style="margin-bottom:16px;">Let's get you closer to your career goal.</p>
+
+        <div class="card card-navy">
+          <div class="row"><span class="eyebrow" style="color:rgba(255,255,255,.55);">Target job</span><span class="chip" style="padding:4px 9px;font-size:11px;background:rgba(255,255,255,.1);border:none;color:#fff;" onclick="go('career-goal')">Change ›</span></div>
+          <div style="font-size:20px;font-weight:800;margin:6px 0 16px;">Marketing Staff</div>
+          <div class="row" style="align-items:flex-end;">
+            <div>
+              <div class="small-muted" style="margin-bottom:4px;">Job readiness</div>
+              <div style="font-size:26px;font-weight:800;">78%</div>
+              <div style="font-size:12px;color:var(--lime);font-weight:700;margin-top:2px;">↑ +6% this month</div>
+            </div>
+            <div class="ring-wrap" style="width:76px;height:76px;">
+              <div class="ring-bg" style="background:conic-gradient(var(--lime) 280.8deg, rgba(255,255,255,.12) 0);"></div>
+              <div class="ring-hole" style="background:var(--navy);inset:8px;"><b style="font-size:14px;color:#fff;">78%</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card m-card" onclick="go('skill-detail')">
+          <div class="eyebrow" style="margin-bottom:8px;">Your next step</div>
+          <div class="row">
+            <div>
+              <div style="font-weight:700;font-size:15px;">Improve Data Analysis</div>
+              <div class="muted" style="margin-top:4px;">Skill gap: 24 pts below target</div>
+            </div>
+            <div style="font-weight:800;font-size:16px;color:var(--purple);">56%</div>
+          </div>
+          <button class="btn btn-secondary" style="margin-top:14px;" onclick="event.stopPropagation();go('learning')">Start learning</button>
+        </div>
+
+        <div class="card m-card" onclick="openMission('M-04')">
+          <div class="eyebrow" style="margin-bottom:8px;">Today's mission</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:8px;">Analyze a Marketing Campaign</div>
+          <div class="skill-pills" style="margin:0 0 12px;"><span class="tag diff-Medium">Medium</span><span class="tag">15 min</span><span class="tag">+150 XP</span></div>
+          <button class="btn btn-primary" onclick="event.stopPropagation();openMission('M-04')">Start mission</button>
+        </div>
+
+        <div class="card">
+          <div class="row" style="margin-bottom:12px;"><span class="section-title" style="margin:0;">Skill progress</span><span class="small-muted" onclick="go('skill-progress')" style="cursor:pointer;">See all ›</span></div>
+          <div id="home-skills"></div>
+        </div>
+
+        <div class="card" style="display:flex;align-items:center;gap:12px;">
+          <div style="width:38px;height:38px;border-radius:11px;background:var(--track);display:flex;align-items:center;justify-content:center;font-size:17px;">🔥</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;">Current streak</div><div class="small-muted">Keep practicing daily</div></div>
+          <div style="font-weight:800;font-size:16px;">7 days</div>
+        </div>
+      </div>
+      <div class="fab" onclick="go('coach')" id="mascot-fab"></div>
+      <div class="bottom-nav" id="bottom-nav"></div>
+    </div>
+
+    <!-- ============ CAREER GOAL ============ -->
+    <div class="screen" id="career-goal">
+      <div class="app-header"><div class="brand" onclick="go('home')"><div class="mark">G</div><div class="word">GRIT</div></div><div class="header-actions"><div class="icon-btn" onclick="go('more')"><svg width="17" height="17" viewBox="0 0 24 24" stroke="var(--navy)" fill="none" stroke-width="1.8"><circle cx="12" cy="5" r="1.4" fill="var(--navy)" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="var(--navy)" stroke="none"/><circle cx="12" cy="19" r="1.4" fill="var(--navy)" stroke="none"/></svg></div></div></div>
+      <div class="scroll">
+        <h1 style="font-size:20px;font-weight:800;margin-bottom:16px;">Career Goal</h1>
+        <div class="card">
+          <div class="row"><span class="eyebrow">My target job</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
+          <div style="font-size:19px;font-weight:800;margin:6px 0 12px;">Marketing Staff</div>
+          <div class="chip" style="display:inline-flex;">Change goal</div>
+        </div>
+        <div class="card">
+          <div class="section-title">Career path</div>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:0;">
+            <div style="font-weight:800;font-size:14px;padding:10px 16px;border-radius:12px;background:var(--navy);color:var(--lime);">Marketing Staff</div>
+            <div style="color:var(--text-3);font-size:16px;margin:4px 0 4px 22px;">↓</div>
+            <div style="font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:12px;background:var(--bg);color:var(--text-2);">Marketing Specialist</div>
+            <div style="color:var(--text-3);font-size:16px;margin:4px 0 4px 22px;">↓</div>
+            <div style="font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:12px;background:var(--bg);color:var(--text-2);">Marketing Manager</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">Job requirements</div>
+          <div id="career-skills"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:4px;" onclick="go('skill-progress')">Improve my skill gap</button>
+      </div>
+      <div class="bottom-nav" id="bottom-nav2"></div>
+    </div>
+
+    <!-- ============ SKILL PROGRESS ============ -->
+    <div class="screen" id="skill-progress">
+      <div class="app-header"><div class="brand" onclick="go('home')"><div class="mark">G</div><div class="word">GRIT</div></div><div class="header-actions"><div class="avatar" onclick="go('profile')">A</div></div></div>
+      <div class="scroll">
+        <h1 style="font-size:20px;font-weight:800;margin-bottom:14px;">Skill Progress</h1>
+        <div class="card" style="text-align:center;">
+          <div class="eyebrow" style="margin-bottom:12px;">Job readiness</div>
+          <div class="ring-wrap">
+            <div class="ring-bg" style="background:conic-gradient(var(--lime) 280.8deg, var(--track) 0);"></div>
+            <div class="ring-hole"><b>78%</b><span>+6% this month</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="eyebrow" style="margin-bottom:10px;">Skill gap overview</div>
+          <div class="small-muted" style="margin-bottom:12px;">Top skills to improve</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="row"><span style="font-size:13px;font-weight:600;">Data Analysis</span><span style="font-weight:700;color:var(--purple);">56%</span></div>
+            <div class="row"><span style="font-size:13px;font-weight:600;">AI Tools</span><span style="font-weight:700;color:var(--purple);">61%</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="eyebrow" style="margin-bottom:6px;">All skills</div>
+          <div id="progress-skills"></div>
+        </div>
+      </div>
+      <div class="bottom-nav" id="bottom-nav3"></div>
+    </div>
+
+    <!-- ============ SKILL DETAIL ============ -->
+    <div class="screen" id="skill-detail">
+      <div class="sub-header"><div class="back-btn" onclick="go('skill-progress')">‹</div><div class="sub-title">Data Analysis</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <div class="card">
+          <div style="display:flex;gap:18px;">
+            <div style="flex:1;text-align:center;"><div class="small-muted">Current</div><div style="font-size:22px;font-weight:800;color:var(--purple);">56%</div></div>
+            <div style="flex:1;text-align:center;"><div class="small-muted">Required</div><div style="font-size:22px;font-weight:800;">80%</div></div>
+            <div style="flex:1;text-align:center;"><div class="small-muted">Gap</div><div style="font-size:22px;font-weight:800;color:#C0475C;">24%</div></div>
+          </div>
+          <div class="progress-track" style="margin-top:14px;"><div class="progress-fill" style="width:56%;"></div></div>
+        </div>
+        <div class="card"><div class="eyebrow" style="margin-bottom:10px;color:#4C8B2B;">What you can do</div><div class="muted">• Basic data cleaning<br>• Basic spreadsheet analysis</div></div>
+        <div class="card"><div class="eyebrow" style="margin-bottom:10px;color:#8A2A4E;">What you need to improve</div><div class="muted">• Campaign performance analysis<br>• Data interpretation<br>• Business recommendations</div></div>
+        <div class="card m-card" onclick="go('learning')"><div class="row"><div><div class="eyebrow" style="margin-bottom:6px;">Recommended</div><div style="font-weight:700;font-size:14.5px;">10-minute lesson</div></div><div style="font-size:18px;">→</div></div></div>
+      </div>
+      <div style="padding:0 20px 34px;"><button class="btn btn-primary" onclick="go('learning')">Improve this skill</button></div>
+    </div>
+
+    <!-- ============ MISSIONS ============ -->
+    <div class="screen" id="tasks">
+      <div class="app-header"><div class="brand" onclick="go('home')"><div class="mark">G</div><div class="word">GRIT</div></div><div class="header-actions"><div class="avatar" onclick="go('profile')">A</div></div></div>
+      <div class="scroll" style="padding-bottom:110px;">
+        <h1 style="font-size:20px;font-weight:800;margin-bottom:10px;">Tasks &amp; Missions</h1>
+        <div class="tab-row" id="mission-tabs"></div>
+        <div id="mission-list"></div>
+      </div>
+      <div class="bottom-nav" id="bottom-nav4"></div>
+    </div>
+
+    <!-- ============ MORE ============ -->
+    <div class="screen" id="more">
+      <div class="app-header"><div class="brand" onclick="go('home')"><div class="mark">G</div><div class="word">GRIT</div></div><div class="header-actions"><div class="avatar" onclick="go('profile')">A</div></div></div>
+      <div class="scroll">
+        <h1 style="font-size:20px;font-weight:800;margin-bottom:14px;">More</h1>
+        <div class="card" style="padding:6px 18px;">
+          <div id="more-list"></div>
+        </div>
+        <div class="card m-card" style="margin-top:14px;background:linear-gradient(135deg,#F3EEFF,#EFFAE0);border:none;" onclick="go('grit-pro')">
+          <div class="row"><span class="eyebrow" style="color:var(--purple);">GRIT Pro</span><span style="font-size:16px;">›</span></div>
+          <div style="font-weight:700;font-size:14.5px;margin-top:6px;">Unlock full learning paths &amp; unlimited missions</div>
+        </div>
+      </div>
+      <div class="bottom-nav" id="bottom-nav5"></div>
+    </div>
+
+    <!-- ============ REAL-WORLD PRACTICE ============ -->
+    <div class="screen" id="practice">
+      <div class="sub-header"><div class="back-btn" onclick="go('more')">‹</div><div class="sub-title">Real-World Practice</div></div>
+      <div class="scroll" style="padding-top:2px;">
+        <div class="eyebrow" style="margin-bottom:4px;">Practice library</div>
+        <p class="muted" style="margin-bottom:14px;">Learn by doing real work.</p>
+        <div class="filter-row" id="practice-filters"></div>
+        <div id="practice-list"></div>
+      </div>
+    </div>
+
+    <!-- ============ PRACTICE DETAIL ============ -->
+    <div class="screen" id="practice-info">
+      <div class="sub-header"><div class="back-btn" onclick="go('practice')">‹</div><div class="sub-title">Practice Detail</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <span class="tag" id="pi-role">Marketing</span>
+        <h1 style="font-size:21px;font-weight:800;margin:10px 0 8px;" id="pi-title">Analyze Campaign Performance</h1>
+        <p class="muted" id="pi-desc" style="margin-bottom:16px;">You are asked to evaluate the performance of a digital campaign and provide recommendations.</p>
+        <div class="card">
+          <div class="list-item"><div class="li-left"><div class="li-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><div style="font-weight:600;font-size:13.5px;">Estimated time</div><div class="small-muted" id="pi-time">15 minutes</div></div></div></div>
+          <div class="list-item"><div class="li-left"><div class="li-icon"><svg viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div><div><div style="font-weight:600;font-size:13.5px;">Skills tested</div><div class="small-muted" id="pi-skills">Data Analysis, Excel, Business Reasoning</div></div></div></div>
+          <div class="list-item"><div class="li-left"><div class="li-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><div><div style="font-weight:600;font-size:13.5px;">Expected output</div><div class="small-muted" id="pi-output">Insights &amp; 3 recommendations</div></div></div></div>
+        </div>
+      </div>
+      <div style="padding:0 20px 34px;"><button class="btn btn-primary" onclick="go('practice-detail')">Start practice</button></div>
+    </div>
+
+    <!-- ============ PRACTICE EXPERIENCE ============ -->
+    <div class="screen" id="practice-detail">
+      <div class="sub-header"><div class="back-btn" onclick="go('practice-info')">‹</div><div class="sub-title">Practice Experience</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <div class="small-muted" style="margin-bottom:6px;">Step 1 of 4</div>
+        <div class="progress-track" style="margin-bottom:18px;"><div class="progress-fill" style="width:25%;"></div></div>
+        <div class="card">
+          <div class="eyebrow" style="margin-bottom:8px;">Your task</div>
+          <p class="muted" id="pd-scenario">Analyze the campaign data provided and answer the questions below.</p>
+        </div>
+        <div class="card">
+          <div class="eyebrow" style="margin-bottom:8px;">Files &amp; data</div>
+          <div class="upload-box"><span>📄 &nbsp;Campaign_Data.xlsx</span><span class="small-muted">24.5 KB ⬇</span></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow" style="margin-bottom:8px;">Your answer</div>
+          <textarea class="answer-box" placeholder="Type your analysis here…"></textarea>
+          <div class="editor-toolbar"><b>B</b><i>I</i><u>U</u><span>•≡</span><span>≡</span></div>
+        </div>
+      </div>
+      <div style="padding:0 20px 34px;"><button class="btn btn-primary" onclick="go('practice-result')">Submit work</button></div>
+    </div>
+
+    <!-- ============ PRACTICE RESULT ============ -->
+    <div class="screen" id="practice-result">
+      <div class="sub-header"><div class="back-btn" onclick="go('practice')">‹</div><div class="sub-title">Practice Result</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <div class="card" style="text-align:center;">
+          <div class="eyebrow" style="margin-bottom:12px;">Overall score</div>
+          <div class="ring-wrap"><div class="ring-bg" style="background:conic-gradient(var(--lime) 280.8deg, var(--track) 0);"></div><div class="ring-hole"><b>78%</b><span>Great work!</span></div></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow" style="margin-bottom:10px;">Skill performance</div>
+          <div id="result-skills"></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow" style="margin-bottom:8px;">AI feedback</div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px;">What you did well</div>
+          <p class="muted" style="margin-bottom:12px;">You identified key trends and provided actionable insights.</p>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px;">What to improve</div>
+          <p class="muted">Try to support your recommendations with more data.</p>
+        </div>
+      </div>
+      <div style="padding:0 20px 34px;"><button class="btn btn-primary" onclick="go('practice')">View detailed feedback</button></div>
+    </div>
+
+    <!-- ============ AI CAREER COACH ============ -->
+    <div class="screen" id="coach">
+      <div class="sub-header"><div class="back-btn" onclick="go('home')">‹</div><div class="sub-title">AI Career Coach</div></div>
+      <div class="scroll" style="padding-top:2px;">
+        <div class="chat-list">
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;" id="coach-intro"></div>
+          <div class="chat-bubble chat-ai">Hi Angela 👋<br>I'm your AI Career Coach. How can I help you today?</div>
+          <div class="chat-bubble chat-user">I want to improve my data analysis skill. What should I do next?</div>
+          <div class="chat-bubble chat-ai">Great! Based on your assessment, your Data Analysis skill is 56%. Here's what I recommend:</div>
+          <div class="card" style="margin-top:-2px;margin-bottom:14px;">
+            <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;margin-bottom:8px;"><span style="color:var(--lime-2);">✓</span><span>Complete 10-min lesson: Understand Campaign Performance</span></div>
+            <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;margin-bottom:8px;"><span style="color:var(--lime-2);">✓</span><span>Practice with Marketing Mission #04</span></div>
+            <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;"><span style="color:var(--lime-2);">✓</span><span>Retry assessment after improving</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:8px 20px 34px;">
+        <button class="btn btn-primary" style="margin-bottom:10px;" onclick="go('learning')">Start recommendation</button>
+        <div class="chip" style="width:100%;color:var(--text-3);justify-content:space-between;">Ask me anything… <span>➤</span></div>
+      </div>
+    </div>
+
+    <!-- ============ PORTFOLIO ============ -->
+    <div class="screen" id="portfolio">
+      <div class="sub-header"><div class="back-btn" onclick="go('more')">‹</div><div class="sub-title">Portfolio</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+          <div class="avatar" style="width:56px;height:56px;border-radius:16px;font-size:20px;">A</div>
+          <div><div style="font-weight:800;font-size:17px;">Angela</div><div class="small-muted">Marketing Enthusiast · Target: Marketing Staff</div></div>
+        </div>
+        <div class="card" style="margin-bottom:16px;"><div class="row"><span class="muted">Job readiness</span><span style="font-weight:800;">78%</span></div><div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:78%;"></div></div></div>
+        <div class="tab-row" style="gap:16px;"><div class="tab-item active">Overview</div><div class="tab-item">Projects</div><div class="tab-item">Skills</div><div class="tab-item">Certificates</div><div class="tab-item">Achievements</div></div>
+        <div class="section-title">Projects</div>
+        <div id="portfolio-projects"></div>
+        <button class="btn btn-primary" style="margin-top:6px;">Share portfolio</button>
+      </div>
+    </div>
+
+    <!-- ============ LEARNING PATH ============ -->
+    <div class="screen" id="learning">
+      <div class="sub-header"><div class="back-btn" onclick="go('home')">‹</div><div class="sub-title">Learning Path</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <div class="eyebrow" style="margin-bottom:4px;">Your next skill gap</div>
+        <h1 style="font-size:19px;font-weight:800;margin-bottom:14px;">Data Analysis</h1>
+        <div class="card">
+          <div style="display:flex;gap:24px;">
+            <div><div class="small-muted">Current level</div><div style="font-size:20px;font-weight:800;color:var(--purple);">56%</div></div>
+            <div><div class="small-muted">Required level</div><div style="font-size:20px;font-weight:800;">80%</div></div>
+          </div>
+        </div>
+        <div class="section-title" style="margin-top:18px;">Recommended lesson</div>
+        <div class="card m-card" onclick="go('practice-detail')" style="display:flex;align-items:center;gap:12px;">
+          <div class="li-icon" style="background:var(--lime);width:44px;height:44px;"><svg viewBox="0 0 24 24" stroke="var(--navy)" fill="none" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:14px;">Understand Campaign Performance</div><div class="small-muted">10 min</div></div>
+          <span style="font-size:16px;">›</span>
+        </div>
+        <div class="section-title" style="margin-top:18px;">Your learning loop</div>
+        <div class="card">
+          <div id="loop-list"></div>
+        </div>
+      </div>
+      <div style="padding:0 20px 34px;"><button class="btn btn-primary" onclick="go('practice-detail')">Start lesson</button></div>
+    </div>
+
+    <!-- ============ ACHIEVEMENTS ============ -->
+    <div class="screen" id="achievements">
+      <div class="sub-header"><div class="back-btn" onclick="go('more')">‹</div><div class="sub-title">Achievements</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <div class="card" style="display:flex;align-items:center;gap:16px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--navy);color:var(--lime);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans';">
+            <span style="font-size:9px;font-weight:600;">LEVEL</span><span style="font-size:19px;font-weight:800;line-height:1;">12</span>
+          </div>
+          <div><div style="font-weight:800;font-size:15px;">Career Explorer</div><div class="small-muted">2,450 XP / 3,000 XP</div>
+            <div class="progress-track" style="width:150px;margin-top:6px;"><div class="progress-fill" style="width:81%;"></div></div>
+          </div>
+        </div>
+        <div class="tab-row" style="margin-top:16px;"><div class="tab-item active">Badges</div><div class="tab-item">Streak</div><div class="tab-item">Stats</div></div>
+        <div style="display:flex;flex-direction:column;gap:10px;" id="badge-list"></div>
+      </div>
+    </div>
+
+    <!-- ============ CERTIFICATIONS ============ -->
+    <div class="screen" id="certifications">
+      <div class="sub-header"><div class="back-btn" onclick="go('more')">‹</div><div class="sub-title">Certifications</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <p class="muted" style="margin-bottom:16px;">Formal recognitions you can add to your portfolio once you close a skill gap.</p>
+        <div class="card">
+          <div class="eyebrow" style="margin-bottom:6px;">National pathway</div>
+          <div style="font-weight:700;font-size:15px;">BNSP Pathway</div>
+          <p class="muted" style="margin:6px 0 10px;">Indonesian national competency certification for Marketing occupations.</p>
+          <div class="row"><span class="tag">Requires 80% readiness</span><span class="small-muted">62% eligible</span></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow" style="margin-bottom:6px;">Industry partner</div>
+          <div style="font-weight:700;font-size:15px;">Microsoft Certified: Data Analytics</div>
+          <p class="muted" style="margin:6px 0 10px;">Validates Excel and data interpretation skills used across most target roles.</p>
+          <div class="row"><span class="tag">Requires 70% Data Analysis</span><span class="small-muted">56% eligible</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PROFILE ============ -->
+    <div class="screen" id="profile">
+      <div class="sub-header"><div class="back-btn" onclick="go('home')">‹</div><div class="sub-title">Profile</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+          <div class="avatar" style="width:56px;height:56px;border-radius:16px;font-size:20px;">A</div>
+          <div><div style="font-weight:800;font-size:17px;">Angela</div><div class="small-muted">Marketing Enthusiast · Target: Marketing Staff</div></div>
+        </div>
+        <div class="card"><div class="row"><span class="muted">Job readiness</span><span style="font-weight:800;">78%</span></div><div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:78%;"></div></div></div>
+        <div class="card" style="display:flex;">
+          <div style="flex:1;text-align:center;"><div style="font-weight:800;font-size:16px;">12</div><div class="small-muted">Skills</div></div>
+          <div style="flex:1;text-align:center;"><div style="font-weight:800;font-size:16px;">5</div><div class="small-muted">Projects</div></div>
+          <div style="flex:1;text-align:center;"><div style="font-weight:800;font-size:16px;">4</div><div class="small-muted">Certificates</div></div>
+          <div style="flex:1;text-align:center;"><div style="font-weight:800;font-size:16px;">18</div><div class="small-muted">Achievements</div></div>
+        </div>
+        <div class="card" style="padding:6px 18px;">
+          <div class="list-item"><div class="li-left"><div class="li-icon"><svg viewBox="0 0 24 24"><path d="M22 10L12 4 2 10l10 6 10-6z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></div><span style="font-weight:600;font-size:13.5px;">Education</span></div><span style="color:var(--text-3);">›</span></div>
+          <div class="list-item"><div class="li-left"><div class="li-icon"><svg viewBox="0 0 24 24"><path d="M3 7h18v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7zM8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></div><span style="font-weight:600;font-size:13.5px;">Experience</span></div><span style="color:var(--text-3);">›</span></div>
+          <div class="list-item"><div class="li-left"><div class="li-icon"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg></div><span style="font-weight:600;font-size:13.5px;">Career interests</span></div><span style="color:var(--text-3);">›</span></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:14px;">Share portfolio</button>
+        <button class="btn btn-ghost" style="margin-top:10px;">Edit profile</button>
+      </div>
+    </div>
+
+    <!-- ============ NOTIFICATIONS ============ -->
+    <div class="screen" id="notif">
+      <div class="sub-header"><div class="back-btn" onclick="go('home')">‹</div><div class="sub-title">Notifications</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <div class="tab-row" id="notif-tabs"></div>
+        <div id="notif-list"></div>
+        <button class="btn btn-ghost" style="margin-top:6px;">Mark all as read</button>
+      </div>
+    </div>
+
+    <!-- ============ GRIT PRO ============ -->
+    <div class="screen" id="grit-pro">
+      <div class="sub-header"><div class="back-btn" onclick="go('more')">‹</div><div class="sub-title">GRIT Pro</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <h1 style="font-size:21px;font-weight:800;margin-bottom:14px;">Upgrade your career journey</h1>
+        <div class="toggle-row" style="margin-bottom:18px;">
+          <div class="toggle-opt active">Monthly</div>
+          <div class="toggle-opt">Yearly (save 20%)</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <div class="plan-card">
+            <div style="font-weight:700;font-size:14px;">GRIT Free</div>
+            <div style="font-size:20px;font-weight:800;margin:8px 0 10px;">Rp0<span style="font-size:11px;font-weight:600;color:var(--text-3);">/month</span></div>
+            <div class="plan-feature">○ Basic assessment</div>
+            <div class="plan-feature">○ Basic learning</div>
+            <div class="plan-feature">○ Gamification</div>
+            <div class="plan-feature">○ Limited missions</div>
+          </div>
+          <div class="plan-card pro">
+            <div style="font-weight:700;font-size:14px;color:var(--purple);">GRIT Pro</div>
+            <div style="font-size:20px;font-weight:800;margin:8px 0 10px;">Rp49.000<span style="font-size:11px;font-weight:600;color:var(--text-3);">/month</span></div>
+            <div class="plan-feature">✓ Full learning paths</div>
+            <div class="plan-feature">✓ AI Career Coach</div>
+            <div class="plan-feature">✓ Advanced assessment</div>
+            <div class="plan-feature">✓ Unlimited missions</div>
+            <div class="plan-feature">✓ Advanced analytics</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:0 20px 34px;"><button class="btn btn-primary" onclick="go('more')">Upgrade to GRIT Pro</button></div>
+    </div>
+
+    <!-- ============ SETTINGS ============ -->
+    <div class="screen" id="settings">
+      <div class="sub-header"><div class="back-btn" onclick="go('more')">‹</div><div class="sub-title">Settings</div></div>
+      <div class="scroll" style="padding-top:6px;">
+        <div class="card" style="padding:6px 18px;">
+          <div class="list-item"><span style="font-weight:600;font-size:13.5px;">Account</span><span style="color:var(--text-3);">›</span></div>
+          <div class="list-item"><span style="font-weight:600;font-size:13.5px;">Notification preferences</span><span style="color:var(--text-3);">›</span></div>
+          <div class="list-item"><span style="font-weight:600;font-size:13.5px;">Language</span><span class="small-muted">English</span></div>
+          <div class="list-item"><span style="font-weight:600;font-size:13.5px;">Privacy</span><span style="color:var(--text-3);">›</span></div>
+          <div class="list-item"><span style="font-weight:600;font-size:13.5px;">Help &amp; support</span><span style="color:var(--text-3);">›</span></div>
+          <div class="list-item"><span style="font-weight:700;font-size:13.5px;color:#C0475C;">Log out</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-indicator"></div>
+  </div>
+</div>
+
+<script>
+/* ---------------- mascot ---------------- */
+function mascotSVG(size){
+  return `<svg width="${size}" height="${size}" viewBox="0 0 120 120" fill="none">
+    <rect x="24" y="10" width="10" height="18" rx="5" fill="#B7F34A"/>
+    <rect x="18" y="24" width="84" height="66" rx="24" fill="#1F2033"/>
+    <circle cx="45" cy="56" r="8" fill="#B7F34A"/>
+    <circle cx="75" cy="56" r="8" fill="#B7F34A"/>
+    <rect x="40" y="76" width="40" height="6" rx="3" fill="#7C5CFC"/>
+    <rect x="10" y="52" width="10" height="24" rx="5" fill="#1F2033"/>
+    <rect x="100" y="52" width="10" height="24" rx="5" fill="#1F2033"/>
+    <rect x="30" y="92" width="60" height="22" rx="11" fill="#7C5CFC" opacity=".18"/>
+  </svg>`;
+}
+document.getElementById('mascot-big').innerHTML = mascotSVG(150);
+document.getElementById('mascot-fab').innerHTML = `<svg viewBox="0 0 120 120" width="26" height="26"><rect x="24" y="10" width="10" height="18" rx="5" fill="#B7F34A"/><rect x="18" y="24" width="84" height="66" rx="24" fill="#B7F34A"/><circle cx="45" cy="56" r="8" fill="#1F2033"/><circle cx="75" cy="56" r="8" fill="#1F2033"/></svg>`;
+document.getElementById('coach-intro').innerHTML = `<div class="mascot">${mascotSVG(36)}</div><div><div style="font-weight:800;font-size:13.5px;">Gritty</div><div class="small-muted">Your AI Career Coach.</div></div>`;
+
+/* ---------------- data ---------------- */
+const SKILLS = [
+  {name:'Excel', current:82, required:75},
+  {name:'Digital Marketing', current:78, required:70},
+  {name:'Communication', current:74, required:65},
+  {name:'Data Analysis', current:56, required:80},
+  {name:'AI Tools', current:61, required:60},
+];
+const MISSIONS = [
+  {id:'M-04', cat:'Recommended', title:'Analyze a Campaign', scenario:"Your manager asks you to evaluate last month's campaign performance and recommend what should be improved.", diff:'Medium', time:'15 min', xp:150},
+  {id:'M-03', cat:'Recommended', title:'Content Strategy Plan', scenario:'Plan a one-month content strategy for a new product launch.', diff:'Easy', time:'20 min', xp:100},
+  {id:'M-02', cat:'Recommended', title:'Market Research', scenario:'Research a target segment and summarize three key findings.', diff:'Hard', time:'25 min', xp:200},
+  {id:'M-01', cat:'In Progress', title:'Segment an Audience', scenario:'Split a customer list into three actionable marketing segments.', diff:'Medium', time:'15 min', xp:140},
+  {id:'M-00', cat:'Completed', title:'Write a Product Brief', scenario:'Summarize a new feature for a non-technical stakeholder.', diff:'Easy', time:'10 min', xp:70, done:true, score:81},
+];
+const PRACTICE = [
+  {title:'Analyze Campaign Performance', role:'Marketing', time:'15 min', skills:'Data Analysis, Excel, Business Reasoning', output:'Insights &amp; 3 recommendations', desc:'You are asked to evaluate the performance of a digital campaign and provide recommendations.'},
+  {title:'Build Social Media Strategy', role:'Marketing', time:'20 min', skills:'Digital Marketing, Communication', output:'A one-page content plan', desc:'Plan a social media strategy for a product launch next month.'},
+  {title:'Competitor Analysis Report', role:'Marketing', time:'20 min', skills:'Business Understanding, Data Analysis', output:'A competitor summary table', desc:'Compare three competitors and identify where your brand can win.'},
+  {title:'Create Marketing Budget Plan', role:'Marketing', time:'25 min', skills:'Excel, Business Understanding', output:'A quarterly budget allocation', desc:'Allocate a fixed marketing budget across four channels with reasoning.'},
+  {title:'Build a Simple Financial Forecast', role:'Finance', time:'25 min', skills:'Excel, Data Analysis', output:'A 12-month revenue forecast', desc:'Your team lead needs a rough revenue forecast for next year\'s planning session.'},
+  {title:'Screen Candidates', role:'HR', time:'15 min', skills:'Communication, Business Understanding', output:'A shortlist with reasoning', desc:'Five resumes came in for an open role. Decide who moves forward and why.'},
+];
+const MORE_ITEMS = [
+  {label:'Real-World Practice', screen:'practice', icon:'M3 7h18v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7zM8 7V5a2 2 0 012-2h4a2 2 0 012 2v2'},
+  {label:'AI Career Coach', screen:'coach', icon:'M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z'},
+  {label:'Portfolio', screen:'portfolio', icon:'M4 4h16v16H4z'},
+  {label:'Certifications', screen:'certifications', icon:'M12 2l2.4 6.9H22l-6 4.4 2.4 7-6.4-4.6L5.6 20l2.4-7-6-4.4h7.6z'},
+  {label:'Achievements', screen:'achievements', icon:'M20 6L9 17l-5-5'},
+  {label:'Profile', screen:'profile', icon:'M20 21a8 8 0 10-16 0M12 11a4 4 0 100-8 4 4 0 000 8z'},
+  {label:'Notifications', screen:'notif', icon:'M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0'},
+  {label:'Settings', screen:'settings', icon:'M12 15a3 3 0 100-6 3 3 0 000 6z M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.6V21a2 2 0 11-4 0v-.2a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.6-1H3a2 2 0 110-4h.2a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.6V3a2 2 0 114 0v.2a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.6 1H21a2 2 0 110 4h-.2a1.7 1.7 0 00-1.5 1z'},
+];
+const BADGES = [
+  {name:'Mission Master', desc:'Completed 20 missions', unlocked:true, icon:'M12 2l2.4 6.9H22l-6 4.4 2.4 7-6.4-4.6L5.6 20l2.4-7-6-4.4h7.6z'},
+  {name:'Skill Builder', desc:'Improved 5 skills', unlocked:true, icon:'M4 20V10M12 20V4M20 20v-7'},
+  {name:'Consistency', desc:'7-day learning streak', unlocked:true, icon:'M12 2s6 5.5 6 11a6 6 0 0 1-12 0c0-5.5 6-11 6-11z'},
+  {name:'Project Builder', desc:'Completed 5 projects', unlocked:false, icon:'M4 4h16v16H4z'},
+  {name:'Top Performer', desc:'Top 10% mission performance', unlocked:false, icon:'M20 6L9 17l-5-5'},
+];
+const NOTIFS = [
+  {t:'Your Data Analysis skill improved by 8%.', time:'2m ago'},
+  {t:'New Marketing Mission available.', time:'1h ago'},
+  {t:'You are one mission away from Level 13.', time:'3h ago'},
+  {t:'Your 7-day streak is active. Keep it up!', time:'1d ago'},
+  {t:'AI Coach recommends a new lesson.', time:'1d ago'},
+];
+const NAV = [
+  {id:'home', label:'Home', icon:'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10'},
+  {id:'career-goal', label:'Career Goal', icon:'M12 2v4M12 18v4M2 12h4M18 12h4M12 8a4 4 0 100 8 4 4 0 000-8z'},
+  {id:'skill-progress', label:'Skill Progress', icon:'M4 20V10M12 20V4M20 20v-7'},
+  {id:'tasks', label:'Missions', icon:'M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01'},
+  {id:'more', label:'More', icon:'M5 12h.01M12 12h.01M19 12h.01'},
+];
+
+/* ---------------- render helpers ---------------- */
+function skillRow(s, big){
+  const gap = s.current-s.required;
+  const gapText = gap>=0 ? 'On target' : `Gap: ${gap}`;
+  return `<div class="skill-row" onclick="go('skill-detail')">
+    <div class="skill-head"><span>${s.name}</span><span>${s.current}%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:${s.current}%;"></div></div>
+    ${big?`<div class="small-muted" style="margin-top:6px;">${gapText} · required ${s.required}%</div>`:''}
+  </div>`;
+}
+document.getElementById('home-skills').innerHTML = SKILLS.map(s=>skillRow(s,false)).join('');
+document.getElementById('progress-skills').innerHTML = SKILLS.map(s=>skillRow(s,true)).join('');
+document.getElementById('career-skills').innerHTML = SKILLS.map(s=>{
+  const gap = s.current-s.required;
+  return `<div class="skill-row"><div class="skill-head"><span>${s.name}</span><span style="color:${gap<0?'#C0475C':'#4C8B2B'}">${gap<0?gap:'+'+gap}</span></div>
+  <div class="row small-muted"><span>Current ${s.current}%</span><span>Required ${s.required}%</span></div>
+  <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${s.current}%;"></div></div></div>`;
+}).join('');
+document.getElementById('result-skills').innerHTML = [
+  {n:'Data Analysis', v:72}, {n:'Business Reasoning', v:81}, {n:'Communication', v:76}
+].map(s=>`<div class="skill-row"><div class="skill-head"><span>${s.n}</span><span>${s.v}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${s.v}%;"></div></div></div>`).join('');
+
+function missionCard(m){
+  const badge = m.done ? `<span class="tag" style="color:#4C8B2B;background:#E7F5D6;">Completed · ${m.score}%</span>` : `<span class="tag diff-${m.diff}">${m.diff}</span>`;
+  return `<div class="card m-card" onclick="openMission('${m.id}')">
+    <div class="row"><span class="eyebrow">Marketing Mission #${m.id.split('-')[1]}</span>${badge}</div>
+    <div style="font-weight:700;font-size:15px;margin-top:8px;">${m.title}</div>
+    <div class="m-scenario">${m.scenario}</div>
+    <div class="skill-pills"><span class="tag">${m.time}</span><span class="tag" style="color:#8A6300;background:#FBF0CC;">+${m.xp} XP</span></div>
+    ${m.done ? '' : `<button class="btn btn-primary" onclick="event.stopPropagation();openMission('${m.id}')">Start mission</button>`}
+  </div>`;
+}
+function renderMissions(cat){
+  document.getElementById('mission-list').innerHTML = MISSIONS.filter(m=>m.cat===cat).map(missionCard).join('');
+}
+const mTabs = ['Recommended','In Progress','Completed'];
+document.getElementById('mission-tabs').innerHTML = mTabs.map((c,i)=>`<div class="tab-item ${i===0?'active':''}" onclick="tabClick(this,'mission-tabs','${c}',renderMissions)">${c}</div>`).join('');
+function tabClick(el,rowId,val,fn){document.querySelectorAll('#'+rowId+' .tab-item').forEach(t=>t.classList.remove('active'));el.classList.add('active');fn(val);}
+renderMissions('Recommended');
+
+function openMission(id){
+  const m = MISSIONS.find(x=>x.id===id) || {};
+  document.getElementById('pi-title').textContent = m.title || '';
+  document.getElementById('pi-desc').textContent = m.scenario || '';
+  document.getElementById('pi-time').textContent = m.time || '';
+  document.getElementById('pd-scenario').textContent = m.scenario || '';
+  go('practice-info');
+}
+
+document.getElementById('practice-filters').innerHTML = ['All','Marketing','Finance','HR','Design'].map((c,i)=>`<div class="filter-pill ${i===1?'active':''}" onclick="filterPractice(this,'${c}')">${c}</div>`).join('');
+function filterPractice(el,cat){
+  document.querySelectorAll('#practice-filters .filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  const list = cat==='All' ? PRACTICE : PRACTICE.filter(p=>p.role===cat);
+  renderPractice(list);
+}
+function renderPractice(list){
+  document.getElementById('practice-list').innerHTML = list.map(p=>`
+  <div class="card m-card" onclick='openPractice(${JSON.stringify(p.title)})'>
+    <div class="row"><div class="li-icon" style="background:var(--lime);"><svg viewBox="0 0 24 24" stroke="var(--navy)" fill="none" stroke-width="1.8"><path d="M3 7h18v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7zM8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></div>
+      <div style="flex:1;margin-left:10px;"><div style="font-weight:700;font-size:14px;">${p.title}</div><div class="small-muted">${p.role} · ${p.time}</div></div>
+      <span style="color:var(--text-3);">›</span>
+    </div>
+  </div>`).join('');
+}
+renderPractice(PRACTICE.filter(p=>p.role==='Marketing'));
+function openPractice(title){
+  const p = PRACTICE.find(x=>x.title===title);
+  document.getElementById('pi-title').textContent = p.title;
+  document.getElementById('pi-role').textContent = p.role;
+  document.getElementById('pi-desc').textContent = p.desc;
+  document.getElementById('pi-skills').innerHTML = p.skills;
+  document.getElementById('pi-output').innerHTML = p.output;
+  document.getElementById('pi-time').textContent = p.time;
+  document.getElementById('pd-scenario').textContent = p.desc;
+  go('practice-info');
+}
+
+document.getElementById('more-list').innerHTML = MORE_ITEMS.map(it=>`
+  <div class="list-item" onclick="go('${it.screen}')">
+    <div class="li-left"><div class="li-icon"><svg viewBox="0 0 24 24" stroke="var(--navy)" fill="none" stroke-width="1.8"><path d="${it.icon}"/></svg></div><span style="font-weight:600;font-size:13.5px;">${it.label}</span></div>
+    <span style="color:var(--text-3);">›</span>
+  </div>`).join('');
+
+document.getElementById('portfolio-projects').innerHTML = [
+  {t:'Campaign Performance Analysis', skills:'Data Analysis · Excel · Insights', score:78},
+  {t:'Market Research Project', skills:'Research · Analysis · Report', score:82},
+  {t:'Social Media Strategy', skills:'Content · Strategy · Planning', score:75},
+].map(p=>`<div class="card"><div class="row"><span style="font-weight:700;font-size:14px;">${p.t}</span><span style="font-weight:800;color:#4C8B2B;">${p.score}%</span></div><div class="small-muted" style="margin-top:6px;">${p.skills}</div></div>`).join('');
+
+document.getElementById('badge-list').innerHTML = BADGES.map(b=>`
+  <div class="badge ${b.unlocked?'unlocked':''}">
+    <div class="badge-icon"><svg viewBox="0 0 24 24"><path d="${b.icon}"/></svg></div>
+    <div><div style="font-weight:700;font-size:13.5px;">${b.name}</div><div class="small-muted">${b.desc}</div></div>
+  </div>`).join('');
+
+document.getElementById('notif-tabs').innerHTML = ['All','Missions','Learning','System'].map((c,i)=>`<div class="tab-item ${i===0?'active':''}">${c}</div>`).join('');
+document.getElementById('notif-list').innerHTML = NOTIFS.map(n=>`
+  <div class="list-item"><div class="li-left"><div class="li-icon"><svg viewBox="0 0 24 24" stroke="var(--navy)" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></div><span style="font-size:13px;">${n.t}</span></div><span class="small-muted">${n.time}</span></div>`).join('');
+
+const loopSteps = [['Learn','Build knowledge'],['Practice','Apply what you learn'],['Mission','Solve real problems'],['Improve','Level up your skills']];
+document.getElementById('loop-list').innerHTML = loopSteps.map((s,i)=>`<div class="row" style="padding:8px 0;${i<loopSteps.length-1?'border-bottom:1px solid var(--border);':''}"><span style="font-weight:700;font-size:13px;">${s[0]}</span><span class="small-muted">${s[1]}</span></div>`).join('');
+
+/* ---------------- nav bars ---------------- */
+function navHTML(activeId){
+  return NAV.map(n=>`<div class="nav-item ${n.id===activeId?'active':''}" onclick="go('${n.id}')">
+    <div class="ic-wrap"><svg viewBox="0 0 24 24"><path d="${n.icon}"/></svg></div>${n.label}
+  </div>`).join('');
+}
+['bottom-nav','bottom-nav2','bottom-nav3','bottom-nav4','bottom-nav5'].forEach(id=>{
+  const map = {'bottom-nav':'home','bottom-nav2':'career-goal','bottom-nav3':'skill-progress','bottom-nav4':'tasks','bottom-nav5':'more'};
+  document.getElementById(id).innerHTML = navHTML(map[id]);
+});
+
+/* ---------------- navigation ---------------- */
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const scrollEl = document.querySelector('#'+id+' .scroll');
+  if(scrollEl) scrollEl.scrollTop = 0;
+}
+function enterApp(){ go('home'); }
+
+/* ---------------- reviewer quick-jump toolbar ---------------- */
+function buildToolbar(){
+  const screens = [
+    ['splash','Splash'],['home','Home'],['career-goal','Career Goal'],['skill-progress','Skill Progress'],['skill-detail','Skill Detail'],
+    ['tasks','Missions'],['more','More'],['practice','Practice'],['practice-info','Practice Detail'],['practice-detail','Practice Experience'],
+    ['practice-result','Practice Result'],['coach','AI Coach'],['portfolio','Portfolio'],['learning','Learning Path'],['achievements','Achievements'],
+    ['certifications','Certifications'],['profile','Profile'],['notif','Notifications'],['grit-pro','GRIT Pro'],['settings','Settings']
+  ];
+  document.getElementById('toolbar').innerHTML = '<span class="toolbar-label">Jump to:</span>' + screens.map(s=>`<button onclick="go('${s[0]}')">${s[1]}</button>`).join('');
+}
+buildToolbar();
+</script>
+</body>
+</html>
