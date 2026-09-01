@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GRIT — Final Assessment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body data-page="final-assessment">
+    <main class="device" aria-label="GRIT mobile prototype">
+      <div class="screen-frame">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span>9:41</span>
+          <span class="icons">
+            <svg width="16" height="11" viewBox="0 0 16 11" aria-hidden="true"><rect x="0" y="6" width="3" height="5" rx="0.5" fill="#1F2033"/><rect x="4.5" y="4" width="3" height="7" rx="0.5" fill="#1F2033"/><rect x="9" y="2" width="3" height="9" rx="0.5" fill="#1F2033"/><rect x="13.5" y="0" width="3" height="11" rx="0.5" fill="#1F2033"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="10" rx="2.5" stroke="#1F2033" opacity=".5"/><rect x="2" y="2" width="14" height="7" rx="1.3" fill="#1F2033"/><rect x="22.3" y="3.3" width="1.4" height="4.4" rx="0.7" fill="#1F2033" opacity=".5"/></svg>
+          </span>
+        </div>
+        <div class="screen active" id="final-assessment">
+          <div class="sub-header"><div class="back-btn" onclick="go('final-assessment-intro')">‹</div><div class="sub-title">Final Assessment</div></div>
+          <div class="scroll">
+            <form id="final-assessment-form" class="assessment-form">
+              <fieldset class="card question-card"><legend>Scenario 1</legend><p>Choose the strongest spreadsheet quality process.</p><label><input type="radio" name="excel" value="2" required /> Clean obvious errors only</label><label><input type="radio" name="excel" value="4" /> Validate, clean, reconcile, and document</label></fieldset>
+              <fieldset class="card question-card"><legend>Scenario 2</legend><p>Choose the strongest campaign diagnosis.</p><label><input type="radio" name="digitalMarketing" value="2" required /> Review reach only</label><label><input type="radio" name="digitalMarketing" value="4" /> Diagnose every funnel stage against its objective</label></fieldset>
+              <fieldset class="card question-card"><legend>Scenario 3</legend><p>Choose the strongest executive update.</p><label><input type="radio" name="communication" value="2" required /> Send a full spreadsheet</label><label><input type="radio" name="communication" value="4" /> Lead with outcome, evidence, risk, and next action</label></fieldset>
+              <fieldset class="card question-card"><legend>Scenario 4</legend><p>Choose the strongest analytical conclusion.</p><label><input type="radio" name="dataAnalysis" value="2" required /> Correlation proves the cause</label><label><input type="radio" name="dataAnalysis" value="4" /> Test segments and alternative explanations first</label></fieldset>
+              <fieldset class="card question-card"><legend>Scenario 5</legend><p>Choose the safest AI-assisted workflow.</p><label><input type="radio" name="aiTools" value="2" required /> Trust polished output</label><label><input type="radio" name="aiTools" value="4" /> Verify sources, calculations, context, and limitations</label></fieldset>
+              <button class="btn btn-primary" type="submit">Compare my results</button>
+            </form>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </main>
+    <script src="../js/data.js"></script>
+    <script src="../js/state.js"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/router.js"></script>
+    <script src="../js/app.js"></script>
+  </body>
+</html>

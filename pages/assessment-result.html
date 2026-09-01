@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GRIT — Assessment Result</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body data-page="assessment-result">
+    <main class="device" aria-label="GRIT mobile prototype">
+      <div class="screen-frame">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span>9:41</span>
+          <span class="icons">
+            <svg width="16" height="11" viewBox="0 0 16 11" aria-hidden="true"><rect x="0" y="6" width="3" height="5" rx="0.5" fill="#1F2033"/><rect x="4.5" y="4" width="3" height="7" rx="0.5" fill="#1F2033"/><rect x="9" y="2" width="3" height="9" rx="0.5" fill="#1F2033"/><rect x="13.5" y="0" width="3" height="11" rx="0.5" fill="#1F2033"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="10" rx="2.5" stroke="#1F2033" opacity=".5"/><rect x="2" y="2" width="14" height="7" rx="1.3" fill="#1F2033"/><rect x="22.3" y="3.3" width="1.4" height="4.4" rx="0.7" fill="#1F2033" opacity=".5"/></svg>
+          </span>
+        </div>
+        <div class="screen active" id="assessment-result">
+          <div class="sub-header"><div class="back-btn" onclick="go('assessment')">‹</div><div class="sub-title">Assessment Result</div></div>
+          <div class="scroll">
+            <div class="card result-hero"><span class="eyebrow">Current job readiness</span><strong id="assessment-readiness">0%</strong><p id="assessment-result-message">Your personalized baseline is ready.</p></div>
+    <div class="card"><div class="section-title">Skill baseline</div><div id="assessment-skill-results"></div></div>
+    <div class="card"><div class="section-title">Assessment insight</div><div class="insight-row"><span>Strengths</span><b id="assessment-strengths">—</b></div><div class="insight-row"><span>Priority gaps</span><b id="assessment-gaps">—</b></div></div>
+    <div class="notice"><b>What happens next?</b><span>GRIT prioritizes your largest skill gap and builds a learning path around it.</span></div>
+          </div>
+          <div class="screen-action"><button class="btn btn-primary" onclick="go('home')">Open my dashboard</button></div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </main>
+    <script src="../js/data.js"></script>
+    <script src="../js/state.js"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/router.js"></script>
+    <script src="../js/app.js"></script>
+  </body>
+</html>
