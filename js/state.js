@@ -2,8 +2,6 @@ const GRIT_STATE_KEY = 'grit-prototype-state-v1';
 
 function createDefaultState() {
   return {
-    registered: false,
-    onboardingComplete: false,
     profile: {
       name: 'Angela',
       email: '',
@@ -41,10 +39,17 @@ function getGritState() {
     const stored = JSON.parse(localStorage.getItem(GRIT_STATE_KEY));
     if (!stored) return fallback;
 
+    const storedState = { ...stored };
+    const storedProfile = { ...(stored.profile || {}) };
+    delete storedState.registered;
+    delete storedState.onboardingComplete;
+    delete storedProfile.name;
+    delete storedProfile.email;
+
     return {
       ...fallback,
-      ...stored,
-      profile: { ...fallback.profile, ...(stored.profile || {}) },
+      ...storedState,
+      profile: { ...fallback.profile, ...storedProfile },
       skillScores: { ...fallback.skillScores, ...(stored.skillScores || {}) },
       initialScores: { ...(stored.initialScores || {}) },
       finalScores: { ...(stored.finalScores || {}) },

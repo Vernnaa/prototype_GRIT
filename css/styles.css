@@ -1248,6 +1248,10 @@ body {
   scrollbar-width: none;
 }
 
+.scroll > .app-header {
+  margin: calc(var(--space-4) * -1) calc(var(--page-pad) * -1) var(--space-4);
+}
+
 .screen:has(> .bottom-nav) > .scroll {
   padding-bottom: calc(var(--bottom-nav-height) + 26px);
 }
@@ -1270,6 +1274,7 @@ body {
 .bottom-nav {
   height: var(--bottom-nav-height);
   padding: 8px 8px 19px;
+  align-items: center;
   background: rgba(255, 255, 255, 0.95);
   border-top-color: rgba(31, 32, 51, 0.07);
   box-shadow: 0 -8px 22px rgba(31, 32, 51, 0.04);
@@ -1277,6 +1282,8 @@ body {
 
 .nav-item {
   grid-template-rows: 28px 25px;
+  align-content: center;
+  place-items: center;
   gap: 2px;
   font-size: 9.5px;
   line-height: 1.08;
@@ -1291,12 +1298,14 @@ body {
 .nav-item svg {
   width: 19px;
   height: 19px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .nav-label {
   min-height: 24px;
   padding: 1px 3px 0;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .nav-item.active .ic-wrap {
@@ -1506,9 +1515,10 @@ textarea.answer-box {
 }
 
 .assessment-paged .question-card {
+  position: relative;
   min-height: 390px;
   margin: 0;
-  padding: 20px;
+  padding: 44px 20px 20px;
   justify-content: flex-start;
   animation: question-in 0.2s ease;
 }
@@ -1518,7 +1528,10 @@ textarea.answer-box {
 }
 
 .assessment-paged .question-card legend {
-  padding: 0 8px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 0;
   color: var(--purple);
   font-size: 12px;
 }
@@ -1605,7 +1618,9 @@ body[data-page='career-goal'] .app-header,
 body[data-page='skill-progress'] .app-header,
 body[data-page='tasks'] .app-header,
 body[data-page='more'] .app-header {
-  background: rgba(255, 255, 255, 0.84);
+  background: transparent;
+  border-bottom: 0;
+  backdrop-filter: none;
 }
 
 body[data-page='home'] .scroll {

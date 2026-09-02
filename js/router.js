@@ -78,10 +78,5 @@ function go(id, params) {
 }
 
 function enterApp() {
-  const state = getGritState();
-  if (!state.registered) {
-    go('register');
-    return;
-  }
-  go(state.onboardingComplete ? 'home' : 'onboarding');
+  go('register');
 }

@@ -20,11 +20,11 @@
           </span>
         </div>
         <div class="screen active" id="career-select">
-          <div class="sub-header"><div class="back-btn" onclick="go('onboarding')">‹</div><div class="sub-title">Career Goal</div></div>
+          <div class="sub-header"><div class="back-btn" id="career-select-back" onclick="go('onboarding')">‹</div><div class="sub-title">Career Goal</div></div>
           <div class="scroll form-scroll">
             <div class="flow-progress"><span class="done"></span><span class="done"></span><span class="active"></span></div>
-            <h1 class="page-heading">Choose your target job</h1>
-            <p class="muted page-intro">GRIT will map the job requirements and measure your current capability against them.</p>
+            <h1 class="page-heading" id="career-select-title">Choose your target job</h1>
+            <p class="muted page-intro" id="career-select-intro">GRIT will map the job requirements and measure your current capability against them.</p>
             <form id="career-form">
               <div class="choice-list">
                 <label class="choice-card"><input type="radio" name="careerGoal" value="Marketing Staff" checked /><span><b>Marketing Staff</b><small>Digital marketing · Communication · Data analysis</small></span></label>

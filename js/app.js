@@ -311,13 +311,18 @@ function initializeBottomNavigation() {
   navigation.innerHTML = navHTML(currentPage);
 }
 
+function makeAppHeadersScrollable() {
+  document.querySelectorAll('.screen > .app-header + .scroll').forEach((scroll) => {
+    scroll.prepend(scroll.previousElementSibling);
+  });
+}
+
 function setText(id, value) {
   const element = getElement(id);
   if (element) element.textContent = value;
 }
 
 function logout() {
-  updateGritState((state) => ({ ...state, registered: false }));
   go('login');
 }
 
@@ -387,20 +392,13 @@ function initializeSkillDetail() {
 }
 
 function initializeAccountFlow() {
+  const params = new URLSearchParams(window.location.search);
+  const editingProfile = params.get('edit') === 'profile';
+  const changingJob = params.get('changeJob') === 'true';
   const registration = getElement('register-form');
   if (registration) {
     registration.addEventListener('submit', (event) => {
       event.preventDefault();
-      const form = new FormData(registration);
-      updateGritState((state) => ({
-        ...state,
-        registered: true,
-        profile: {
-          ...state.profile,
-          name: form.get('name').trim(),
-          email: form.get('email').trim(),
-        },
-      }));
       go('onboarding');
     });
   }
@@ -409,18 +407,24 @@ function initializeAccountFlow() {
   if (login) {
     login.addEventListener('submit', (event) => {
       event.preventDefault();
-      const form = new FormData(login);
-      const state = updateGritState((current) => ({
-        ...current,
-        registered: true,
-        profile: { ...current.profile, email: form.get('email').trim() },
-      }));
-      go(state.onboardingComplete ? 'home' : 'onboarding');
+      go('home');
     });
   }
 
   const onboarding = getElement('onboarding-form');
   if (onboarding) {
+    if (editingProfile) {
+      const profile = getGritState().profile;
+      ['age', 'education', 'institution', 'careerInterest', 'experience'].forEach((field) => {
+        onboarding.elements[field].value = profile[field] || '';
+      });
+      document.querySelector('.page-heading').textContent = 'Edit your profile';
+      document.querySelector('.page-intro').textContent = 'Keep your background and experience up to date.';
+      document.querySelector('.back-btn').setAttribute('onclick', "go('profile')");
+      document.querySelector('.flow-progress').hidden = true;
+      onboarding.querySelector('button[type="submit"]').textContent = 'Save changes';
+    }
+
     onboarding.addEventListener('submit', (event) => {
       event.preventDefault();
       const form = new FormData(onboarding);
@@ -435,19 +439,35 @@ function initializeAccountFlow() {
           experience: form.get('experience').trim(),
         },
       }));
-      go('career-select');
+      go(editingProfile ? 'profile' : 'career-select');
     });
   }
 
   const career = getElement('career-form');
   if (career) {
+    if (changingJob) {
+      const currentGoal = getGritState().careerGoal;
+      career.elements.careerGoal.value = currentGoal;
+      getElement('career-select-back').setAttribute('onclick', "go('career-goal')");
+      getElement('career-select-title').textContent = 'Change your target job';
+      getElement('career-select-intro').textContent = 'A new target needs a fresh assessment to map your skill gap.';
+      document.querySelector('.flow-progress').hidden = true;
+      career.querySelector('button[type="submit"]').textContent = 'Update target job';
+    }
+
     career.addEventListener('submit', (event) => {
       event.preventDefault();
       const form = new FormData(career);
+      const careerGoal = form.get('careerGoal');
+      const state = getGritState();
+      if (changingJob && careerGoal === state.careerGoal) {
+        go('career-goal');
+        return;
+      }
+      if (changingJob && !window.confirm(`Changing your target to ${careerGoal} requires a new assessment. Continue?`)) return;
       updateGritState((state) => ({
         ...state,
-        careerGoal: form.get('careerGoal'),
-        onboardingComplete: true,
+        careerGoal,
       }));
       go('assessment-intro');
     });
@@ -798,6 +818,7 @@ initializePortfolio();
 initializeAchievements();
 initializeNotifications();
 initializeLearningLoop();
+makeAppHeadersScrollable();
 initializeBottomNavigation();
 populatePracticeContext();
 initializePersonalizedContent();
