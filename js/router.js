@@ -3,6 +3,7 @@ const PAGE_IDS = [
   'register',
   'login',
   'onboarding',
+  'onboarding-flow',
   'career-select',
   'assessment-intro',
   'assessment',

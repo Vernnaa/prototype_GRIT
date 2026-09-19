@@ -24,10 +24,10 @@
           <div class="scroll form-scroll">
             <h1 class="page-heading">Welcome back</h1>
             <p class="muted page-intro">Enter anything below to open the prototype dashboard.</p>
-            <form class="card form-card" id="login-form">
-              <label class="field"><span>Email</span><input name="email" type="text" inputmode="email" placeholder="Type anything" required /></label>
-              <label class="field"><span>Password</span><input name="password" type="password" placeholder="Type anything" required /></label>
-              <button class="btn btn-primary" type="submit">Log in</button>
+            <form class="card form-card" id="login-form" novalidate>
+              <label class="field"><span>Email</span><input name="email" type="text" inputmode="email" placeholder="Type anything" /></label>
+              <label class="field"><span>Password</span><input name="password" type="password" placeholder="Type anything" /></label>
+              <button class="btn btn-primary" type="submit" onclick="go('onboarding-flow'); return false;">Log in</button>
             </form>
             <p class="prototype-note">Prototype mode: no login details are checked or saved.</p>
           </div>

@@ -399,16 +399,21 @@ function initializeAccountFlow() {
   if (registration) {
     registration.addEventListener('submit', (event) => {
       event.preventDefault();
-      go('onboarding');
+      go('onboarding-flow');
     });
+    // bypass instant klik tanpa validasi
+    const btn = registration.querySelector('button[type="submit"]');
+    if (btn) btn.addEventListener('click', (e) => { e.preventDefault(); go('onboarding-flow'); });
   }
 
   const login = getElement('login-form');
   if (login) {
     login.addEventListener('submit', (event) => {
       event.preventDefault();
-      go('home');
+      go('onboarding-flow');
     });
+    const btn = login.querySelector('button[type="submit"]');
+    if (btn) btn.addEventListener('click', (e) => { e.preventDefault(); go('onboarding-flow'); });
   }
 
   const onboarding = getElement('onboarding-form');
