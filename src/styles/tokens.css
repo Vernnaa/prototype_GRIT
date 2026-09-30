@@ -1,0 +1,13 @@
+:root {
+  color-scheme: light;
+  --navy: #172033;
+  --lime: #b7f34a;
+  --purple: #7c5cfc;
+  --paper: #f7f7f2;
+  --white: #ffffff;
+  --black: #10141f;
+  --muted: rgba(23, 32, 51, 0.7);
+  --muted-soft: rgba(23, 32, 51, 0.48);
+  --line: rgba(23, 32, 51, 0.1);
+  --track: rgba(23, 32, 51, 0.08);
+}

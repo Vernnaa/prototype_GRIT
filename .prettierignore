@@ -1,0 +1,18 @@
+# Hasil Build & Cache Framework
+.next
+out
+dist
+/build
+
+# File Lock
+package-lock.json
+
+# Log & Environment
+*.log
+.env
+.env.*
+
+# Third-party & Assets
+node_modules
+public
+design

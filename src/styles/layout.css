@@ -1,0 +1,24 @@
+.stage {
+  min-height: 100dvh;
+  padding: 0;
+  gap: 0;
+  background: var(--paper);
+}
+
+.device {
+  width: min(430px, calc(100vw - 32px), calc(100dvh * 0.55));
+  height: min(860px, calc(100dvh - 32px));
+}
+
+.desktop-caption {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .device {
+    width: 100vw;
+    height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+}

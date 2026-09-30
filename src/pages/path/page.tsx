@@ -1,0 +1,16 @@
+import type { Dispatch } from 'react';
+import { fieldReason, type Field, type Mission } from '../../data';
+import type { Action, State } from '../../state';
+import { Arrow, BottomAction, CoachNote, MissionCard, Section, Top } from '../../components/ui';
+import { navigate, type RouteName } from '../../router';
+
+export function DirectionPage({state,ranked,dispatch}:{state:State;ranked:Field[];dispatch:Dispatch<Action>}) {
+  return <><Top title="YOUR DIRECTION" back={()=>navigate('explore')}/><div className="scroll"><div className="step-label">DECIDE / 05</div><h1>You’re starting to see your direction.</h1><p className="lead">What you’ve tried and enjoyed can point to several possibilities. Keep exploring as you grow.</p><Section eyebrow="POSSIBILITIES WORTH EXPLORING">{ranked.slice(0,3).map((field,index)=><button type="button" key={field.id} className={`direction-card ${state.direction===field.id?'chosen':''}`} onClick={()=>dispatch({type:'direction',id:field.id})}><span className="rank">0{index+1}</span><span><strong>{field.name}</strong><small>{fieldReason(field,state)}</small></span><span>{state.direction===field.id?'✓':'↗'}</span></button>)}</Section><CoachNote>You can change your direction whenever you want. This is your journey.</CoachNote></div><BottomAction><Arrow onClick={()=>navigate('path')}>Build my path</Arrow><button className="text-action" onClick={()=>navigate('explore')}>Keep exploring instead</button></BottomAction></>;
+}
+
+export function MyPathPage({state,chosen,activeMission}:{state:State;chosen?:Field;activeMission:Mission}) {
+  const steps:[string,string,boolean,RouteName][]=[['Explore','Discover your interests',!!state.answers.interests.length,'explore'],['Experience','Complete your first mission',!!state.completedMissions.length,'missions'],['Reflect','Notice what you enjoyed',!!state.reflections.length,'missions'],['Decide','Pick a direction to explore',!!chosen,'direction'],['Progress','Try another experience',state.completedMissions.length>1,'missions']];
+  return <><Top title="MY PATH" back={()=>navigate('home')} side={<button type="button" className="top-save" onClick={()=>navigate('direction')}>Edit</button>}/><div className="scroll"><div className="step-label">YOUR JOURNEY / YOUR PACE</div><h1>Your Path<span className="lime-dot">.</span></h1><p className="lead">Your path can change as you grow.</p><div className="path-highlight"><small>CURRENT DIRECTION</small><strong>{chosen?.name||'Still exploring'}</strong><p>{chosen?fieldReason(chosen,state):'Try a mission, reflect, then choose something worth exploring.'}</p><button type="button" onClick={()=>navigate('direction')}>Explore directions ↗</button></div><div className="roadmap">{steps.map(([title,subtitle,done,destination],index)=><button className="road-node" type="button" key={title} onClick={()=>navigate(destination)}><span className={`road-icon ${done?'done':''}`}>{done?'✓':String(index+1).padStart(2,'0')}</span><span><strong>{title}</strong><small>{subtitle}</small></span><span className="chevron">↗</span></button>)}</div><Section eyebrow="YOUR NEXT STEP" title="Keep moving"><MissionCard mission={activeMission} done={state.completedMissions.includes(activeMission.id)} onClick={()=>navigate('mission',activeMission.id)}/></Section></div></>;
+}
+
+export default MyPathPage;
