@@ -2,7 +2,7 @@
 
 ## Current app entry (React + Tailwind v4)
 
-The active prototype now starts from `src/main.tsx` → `src/FreshApp.tsx` and `src/style.css`. `src/content.ts` contains the new fields, missions and ten questions; `src/model.ts` owns local state under `grit-fresh-v1`. The earlier `src/App.tsx` and related pages remain in the repository as inactive legacy work. `references/screen/references_screen.jpeg` is the whole-app visual guide; `references/screen/screen-1.png` shows detail for the first four screens. Mascot art is imported directly from `references/maskot/`. Brand colors for the active app are exactly `#172033`, `#B7F34A`, `#7C5CFC`, `#F7F7F2`, `#FFFFFF`, and `#10141F`. Keep Vite's `/prototype_GRIT/` base for GitHub Pages.
+The active prototype starts from `src/main.tsx` → `src/App.tsx` and `src/style.css`. Active screens live in `src/pages/<feature>/screens.tsx`; shared components live in `src/components/AppUI.tsx` and `src/components/AppShell.tsx`. Older `page.tsx` files are inactive legacy work. `src/content.ts` contains fields, missions and ten questions; `src/model.ts` owns local state under `grit-fresh-v1`. `references/screen/references_screen.jpeg` is the whole-app visual guide; `references/screen/screen-1.png` shows detail for the first four screens. Mascot art is imported directly from `references/maskot/`. Brand colors for the active app are exactly `#172033`, `#B7F34A`, `#7C5CFC`, `#F7F7F2`, `#FFFFFF`, and `#10141F`. Keep Vite's `/prototype_GRIT/` base for GitHub Pages.
 
 ## Purpose
 

@@ -1,6 +1,6 @@
 # GRIT repository instructions
 
-- The active application lives at `src/main.tsx` → `src/FreshApp.tsx`, styled by Tailwind v4 in `src/style.css`. Older `src/App.tsx` and page folders are inactive legacy work; preserve them unless explicitly asked to remove them.
+- The active application lives at `src/main.tsx` → `src/App.tsx`, styled by Tailwind v4 in `src/style.css`. Older page folders are inactive legacy work; preserve them unless explicitly asked to remove them.
 - Preserve GitHub Pages Vite base `/prototype_GRIT/`, `.github/workflows/pages.yml`, and the repository's existing local edits.
 - Use `references/screen/references_screen.jpeg` as the all-screen visual guide, `references/screen/screen-1.png` for first four screens, and real Gritty artwork under `references/maskot/`.
 - Brand colors: navy `#172033`, lime `#B7F34A`, purple `#7C5CFC`, off-white `#F7F7F2`, white `#FFFFFF`, black `#10141F`. Typeface: Manrope.

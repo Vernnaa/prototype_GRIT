@@ -1,0 +1,123 @@
+import type { ReactNode } from 'react';
+import { ArrowRight, ArrowUpRight, Check } from '@phosphor-icons/react';
+import type { Field, Mission } from '../../content';
+import type { Profile } from '../../model';
+import { Button, Card, Icon, Label, Mascot } from '../../components/AppUI';
+
+export function Home({
+  profile,
+  suggested,
+  ranked,
+  fieldCard,
+  chooseMission,
+  explore,
+  progress,
+  coach,
+}: {
+  profile: Profile;
+  suggested: Mission;
+  ranked: Field[];
+  fieldCard: (field: Field) => ReactNode;
+  chooseMission: (id: string) => void;
+  explore: () => void;
+  progress: () => void;
+  coach: () => void;
+}) {
+  return (
+    <div className="px-5 pt-6">
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <p className="text-[11px] font-bold text-navy/55">
+            YOUR JOURNEY CONTINUES
+          </p>
+          <h1 className="mt-1 text-[28px] font-extrabold tracking-tight">
+            Hi, {profile.name}!
+          </h1>
+          <p className="text-xs text-navy/65">Ready to discover what’s next?</p>
+        </div>
+        <Mascot size={78} />
+      </div>
+      <Card className="mb-6 !bg-navy !p-4 text-white">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-[10px] font-extrabold tracking-widest text-lime">
+              YOUR NEXT STEP
+            </p>
+            <h2 className="mt-3 text-xl font-extrabold leading-tight">
+              {suggested.title}
+            </h2>
+            <p className="mt-2 text-xs text-white/70">
+              {suggested.time} · +{suggested.xp} XP
+            </p>
+          </div>
+          <Icon name={suggested.icon} size={45} className="text-lime" />
+        </div>
+        <Button onClick={() => chooseMission(suggested.id)} className="mt-5">
+          Start <ArrowRight size={17} />
+        </Button>
+      </Card>
+      <Label>YOUR JOURNEY</Label>
+      <div className="mb-6 flex items-center justify-between gap-1 rounded-[20px] bg-white px-2 py-4">
+        {['Explore', 'Experience', 'Reflect', 'Decide', 'Progress'].map(
+          (x, i) => {
+            const active = [
+              profile.explored.length > 0,
+              profile.completed.length > 0,
+              profile.reflections.length > 0,
+              !!profile.direction,
+              profile.milestones.length > 0,
+            ][i];
+            return (
+              <div
+                key={x}
+                className="flex flex-1 flex-col items-center gap-1 text-center"
+              >
+                <span
+                  className={`flex h-7 w-7 items-center justify-center rounded-full ${active ? 'bg-lime' : 'bg-paper'}`}
+                >
+                  {active ? <Check size={14} /> : i + 1}
+                </span>
+                <small className="text-[8px] font-bold">{x}</small>
+              </div>
+            );
+          },
+        )}
+      </div>
+      <div className="mb-3 flex items-center justify-between">
+        <Label>EXPLORE MORE</Label>
+        <button onClick={explore} className="text-[11px] font-bold text-purple">
+          See all ↗
+        </button>
+      </div>
+      {ranked.slice(0, 3).map(fieldCard)}
+      <Label>YOUR PROGRESS</Label>
+      <Card
+        onClick={progress}
+        className="mb-4 grid grid-cols-4 gap-1 !p-3 text-center"
+      >
+        {[
+          [profile.xp, 'XP'],
+          [profile.streak, 'Streak'],
+          [profile.completed.length, 'Missions'],
+          [profile.explored.length, 'Fields'],
+        ].map(([n, x]) => (
+          <div key={x}>
+            <strong className="text-base font-extrabold">{n}</strong>
+            <small className="block text-[9px] text-navy/55">{x}</small>
+          </div>
+        ))}
+      </Card>
+      <button
+        onClick={coach}
+        className="mb-3 flex w-full items-center gap-3 rounded-[18px] bg-purple/10 p-3 text-left"
+      >
+        <Mascot size={45} />
+        <span className="flex-1 text-xs font-extrabold">
+          Need to talk it through?
+          <small className="block font-medium">Ask GRIT Coach</small>
+        </span>
+        <ArrowUpRight size={17} />
+      </button>
+    </div>
+  );
+}
