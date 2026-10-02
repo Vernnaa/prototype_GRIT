@@ -31,7 +31,7 @@ export function Direction({
   explore: () => void;
 }) {
   return (
-    <div className="px-5 pt-3">
+    <div className="bg-white px-5 pt-3">
       {top('My direction')}
       {headline(
         'You’re starting to see your direction.',
@@ -47,16 +47,17 @@ export function Direction({
       </div>
       <Label>YOUR TOP DIRECTIONS</Label>
       {ranked.slice(0, 3).map((f, i) => (
-        <Card key={f.id} className="mb-3">
+        <Card key={f.id} className="mb-3 !p-3">
           <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple/15 text-sm font-extrabold text-purple">
-              {i + 1}
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-purple/15 text-purple">
+              <Icon name={f.icon} size={26} />
             </span>
             <div className="flex-1">
-              <p className="text-sm font-extrabold">{f.name}</p>
+              <p className="text-[15px] font-extrabold">{f.name}</p>
               <p className="text-[11px] text-navy/55">
                 Why it might fit: {f.tags.slice(0, 2).join(' + ')}
               </p>
+              <span className="mt-2 inline-block rounded-full bg-lime px-2 py-0.5 text-[10px] font-bold">Direction {i + 1} to explore</span>
             </div>
             <button
               onClick={() => chooseField(f.id)}
@@ -78,9 +79,7 @@ export function Direction({
         </Card>
       ))}
       <Button onClick={build}>Build My Path</Button>
-      <button className="mt-3 w-full p-2 text-xs font-bold" onClick={explore}>
-        Keep Exploring
-      </button>
+      <Button variant="outline" className="mt-2" onClick={explore}>Keep Exploring</Button>
     </div>
   );
 }
@@ -136,20 +135,10 @@ export function MyPath({
     ],
   ] as const;
   return (
-    <div className="px-5 pt-5">
+    <div className="bg-white px-5 pt-5">
       {headline('Your Path', 'Your path can change as you grow.')}
-      <div className="mb-4 flex items-center justify-between rounded-2xl bg-navy p-4 text-white">
-        <div>
-          <p className="text-[10px] font-bold text-lime">POSSIBLE DIRECTION</p>
-          <p className="text-lg font-extrabold">
-            {chosen?.name || 'Still exploring'}
-          </p>
-        </div>
-        <button aria-label="Change direction" onClick={() => go('direction')}>
-          <PencilSimple size={19} />
-        </button>
-      </div>
-      <div className="mt-7">
+      <button className="mb-3 self-end rounded-full bg-paper px-4 py-2 text-xs font-bold" onClick={() => go('direction')}><PencilSimple size={16} className="inline" /> Edit direction</button>
+      <div className="mt-4">
         {nodes.map(([name, desc, done, target], i) => (
           <button
             type="button"
@@ -158,19 +147,18 @@ export function MyPath({
             className="road-line relative flex w-full gap-4 pb-6 text-left"
           >
             <span
-              className={`relative z-[1] flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${done ? 'bg-lime' : 'bg-white ring-2 ring-purple/40'}`}
+              className={`relative z-[1] flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${done ? 'bg-lime' : !profile.milestones.includes('build') && i === 3 ? 'bg-purple text-white' : 'bg-white ring-2 ring-navy/20'}`}
             >
               {done ? <Check size={17} weight="bold" /> : i + 1}
             </span>
-            <div className="flex-1 rounded-2xl bg-white p-3">
-              <p className="text-[10px] font-extrabold text-purple">
-                {name} · {done ? 'DONE' : '+50 XP'}
-              </p>
-              <p className="mt-1 text-xs font-bold">{desc}</p>
+            <div className="flex-1 py-1">
+              <p className="text-[13px] font-extrabold text-navy">{name}</p>
+              <p className="mt-1 text-[12px] text-navy/65">{desc}</p>
             </div>
           </button>
         ))}
       </div>
+      <Card onClick={() => go('recommend')} className="mb-4 !p-3"><span className="text-[11px] text-navy/65">Current milestone</span><strong className="block text-sm">{chosen?.name || 'Your'} Fundamentals</strong><span className="text-xs text-purple">Explore next ↗</span></Card>
       <Button onClick={() => go('recommend')}>
         Continue My Path <ArrowRight size={17} />
       </Button>

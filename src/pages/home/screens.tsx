@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { ArrowRight, ArrowUpRight, Check } from '@phosphor-icons/react';
 import type { Field, Mission } from '../../content';
-import type { Profile } from '../../model';
-import { Button, Card, Icon, Label, Mascot } from '../../components/AppUI';
+import { level, levelNames, type Profile } from '../../model';
+import { Button, Card, Icon, Mascot } from '../../components/AppUI';
 
 export function Home({
   profile,
@@ -24,39 +24,34 @@ export function Home({
   coach: () => void;
 }) {
   return (
-    <div className="px-5 pt-6">
-      <div className="mb-5 flex items-center justify-between">
+    <div className="bg-white px-5 pt-6">
+      <div className="relative mb-5 flex min-h-24 items-center justify-between overflow-hidden">
         <div>
-          <p className="text-[11px] font-bold text-navy/55">
-            YOUR JOURNEY CONTINUES
-          </p>
-          <h1 className="mt-1 text-[28px] font-extrabold tracking-tight">
+          <h1 className="mt-1 text-[30px] font-extrabold tracking-tight">
             Hi, {profile.name}!
           </h1>
-          <p className="text-xs text-navy/65">Ready to discover what’s next?</p>
+          <p className="mt-1 max-w-[180px] text-[14px] leading-snug text-navy/70">Ready to discover what’s next?</p>
         </div>
-        <Mascot size={78} />
+        <Mascot size={115} className="-mr-4" />
       </div>
       <Card className="mb-6 !bg-navy !p-4 text-white">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-[10px] font-extrabold tracking-widest text-lime">
-              YOUR NEXT STEP
-            </p>
-            <h2 className="mt-3 text-xl font-extrabold leading-tight">
+            <p className="text-[17px] font-extrabold">Your Next Step</p>
+            <h2 className="mt-3 text-[17px] font-extrabold leading-tight">
               {suggested.title}
             </h2>
             <p className="mt-2 text-xs text-white/70">
               {suggested.time} · +{suggested.xp} XP
             </p>
           </div>
-          <Icon name={suggested.icon} size={45} className="text-lime" />
+          <span className="rounded-2xl bg-purple p-2"><Icon name={suggested.icon} size={42} className="text-white" /></span>
         </div>
         <Button onClick={() => chooseMission(suggested.id)} className="mt-5">
           Start <ArrowRight size={17} />
         </Button>
       </Card>
-      <Label>YOUR JOURNEY</Label>
+      <h2 className="mb-3 text-[17px] font-extrabold">Your Journey</h2>
       <div className="mb-6 flex items-center justify-between gap-1 rounded-[20px] bg-white px-2 py-4">
         {['Explore', 'Experience', 'Reflect', 'Decide', 'Progress'].map(
           (x, i) => {
@@ -84,13 +79,14 @@ export function Home({
         )}
       </div>
       <div className="mb-3 flex items-center justify-between">
-        <Label>EXPLORE MORE</Label>
+        <h2 className="text-[17px] font-extrabold">Explore more</h2>
         <button onClick={explore} className="text-[11px] font-bold text-purple">
           See all ↗
         </button>
       </div>
-      {ranked.slice(0, 3).map(fieldCard)}
-      <Label>YOUR PROGRESS</Label>
+      {ranked.slice(0, 2).map(fieldCard)}
+      <h2 className="mb-3 text-[17px] font-extrabold">Your Progress</h2>
+      <p className="mb-3 text-[13px] font-semibold text-navy/70">Level {level(profile.xp)} · {levelNames[level(profile.xp) - 1]} · {profile.xp} XP</p>
       <Card
         onClick={progress}
         className="mb-4 grid grid-cols-4 gap-1 !p-3 text-center"

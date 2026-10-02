@@ -1,30 +1,61 @@
-import { ArrowLeft, ArrowRight, Sparkle } from '@phosphor-icons/react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  CalendarBlank,
+  ChartBar,
+  ChatCircleDots,
+  Compass,
+  Cube,
+  Heart,
+  Lightbulb,
+  Palette,
+  PaperPlaneTilt,
+  Rocket,
+  Sparkle,
+  UsersThree,
+} from '@phosphor-icons/react';
 import { fields, questions } from '../../content';
 import type { Profile } from '../../model';
-import { Bar, Button, Card, Icon, Label, Logo, Mascot } from '../../components/AppUI';
+import {
+  Button,
+  Card,
+  Icon,
+  Label,
+  Logo,
+  Mascot,
+} from '../../components/AppUI';
 import type { ReactNode } from 'react';
 
 export function Splash({ onContinue }: { onContinue: () => void }) {
   return (
     <button
       onClick={onContinue}
-      className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-navy text-white"
+      type="button"
+      aria-label="Continue to welcome screen"
+      className="onboarding-splash relative flex h-full w-full flex-col items-center overflow-hidden bg-navy text-white"
     >
-      <Logo light />
-      <p className="mt-2 text-[11px] font-extrabold tracking-[.13em]">
-        FROM DREAM <span className="text-lime">TO DIRECTION</span>
-      </p>
-      <div className="relative mt-8">
-        <span className="absolute left-0 top-10 h-24 w-24 rounded-full bg-lime blur-2xl opacity-60" />
-        <Mascot size={295} className="relative" />
+      <div className="onboarding-splash-brand relative z-10">
+        <Logo light />
+        <p className="mt-1 text-[13px] font-extrabold tracking-[-.03em]">
+          FROM DREAM <span className="text-lime">TO DIRECTION</span>
+        </p>
       </div>
-      <p className="mt-2 text-center text-lg font-bold italic leading-tight">
+      <div
+        className="onboarding-splash-art relative w-full flex-1"
+        aria-hidden="true"
+      >
+        <span className="absolute bottom-[15%] left-[-5%] h-28 w-28 -rotate-12 rounded-[42%] bg-lime" />
+        <span className="absolute right-[-7%] top-[22%] h-44 w-24 rotate-[-24deg] rounded-[50%] bg-lime" />
+        <span className="absolute left-[12%] top-[25%] h-8 w-8 rounded-full border-l-2 border-t-2 border-lime" />
+        <Mascot
+          size={500}
+          className="onboarding-splash-mascot absolute left-1/2 max-w-none -translate-x-1/2"
+        />
+      </div>
+      <p className="onboarding-splash-tagline relative z-10 -rotate-6 text-center text-[22px] font-semibold italic leading-tight">
         A brighter you.
         <br />A bigger tomorrow.
       </p>
-      <span className="absolute bottom-9 h-1 w-24 rounded-full bg-white/25">
-        <span className="block h-full w-12 rounded-full bg-lime" />
-      </span>
     </button>
   );
 }
@@ -32,33 +63,49 @@ export function Splash({ onContinue }: { onContinue: () => void }) {
 export function Welcome({
   onContinue,
   onDream,
-  headline,
 }: {
   onContinue: () => void;
   onDream: () => void;
-  headline: (text: string, sub?: string) => ReactNode;
 }) {
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-white">
-      <div className="px-7 pt-11">
-        {headline(
-          'You don’t have to know your future yet.',
-          'Explore who you are, try new possibilities, and find a direction that feels right for you.',
-        )}
+    <div className="onboarding-welcome relative flex h-full flex-col overflow-hidden bg-white">
+      <div className="relative z-10 px-7 pt-16">
+        <h1 className="text-[clamp(32px,9vw,40px)] font-extrabold leading-[1.04] tracking-[-.065em]">
+          You don’t
+          <br />
+          have to know
+          <br />
+          your{' '}
+          <mark className="rounded-md bg-lime px-1 text-navy">future yet.</mark>
+        </h1>
+        <p className="mt-5 max-w-[300px] text-[15px] leading-[1.5] text-navy/75">
+          Explore who you are, try new possibilities, and find a direction that
+          feels right for you.
+        </p>
       </div>
-      <div className="relative min-h-0 flex-1 overflow-hidden">
-        <span className="absolute left-6 top-9 text-7xl font-extralight text-lime">
+      <div
+        className="onboarding-welcome-art relative min-h-[150px] flex-1 overflow-hidden"
+        aria-hidden="true"
+      >
+        <span className="absolute bottom-0 left-[-13%] h-24 w-40 -rotate-[25deg] rounded-3xl bg-navy" />
+        <span className="absolute bottom-3 right-[-9%] h-28 w-36 rotate-[-34deg] rounded-3xl bg-purple" />
+        <span className="absolute right-[9%] top-[17%] text-6xl font-light text-lime">
           ↗
         </span>
+        <p className="absolute right-[7%] top-[4%] z-10 -rotate-12 text-right text-[13px] font-bold italic leading-tight">
+          Same journey
+          <br />
+          brighter you!
+        </p>
         <Mascot
-          size={340}
+          size={430}
           phone
-          className="absolute bottom-[-36px] left-1/2 max-w-none -translate-x-1/2"
+          className="onboarding-welcome-mascot absolute left-1/2 max-w-none -translate-x-1/2"
         />
       </div>
-      <div className="relative z-10 rounded-t-[28px] bg-navy px-5 pb-9 pt-5">
-        <Button onClick={onContinue}>
-          Start Exploring <ArrowRight size={18} />
+      <div className="relative z-10 bg-navy px-5 pb-[max(32px,env(safe-area-inset-bottom))] pt-5">
+        <Button onClick={onContinue} className="!rounded-full !text-[16px]">
+          Start Exploring
         </Button>
         <button
           className="mt-4 w-full text-center text-xs font-bold text-white underline underline-offset-4"
@@ -76,7 +123,6 @@ export function StartingPoint({
   update,
   setError,
   back,
-  headline,
   bottom,
   go,
 }: {
@@ -84,12 +130,31 @@ export function StartingPoint({
   update: (part: Partial<Profile>) => void;
   setError: (message: string) => void;
   back: () => void;
-  headline: (text: string, sub?: string) => ReactNode;
   bottom: (content: ReactNode) => ReactNode;
   go: (screen: 'noidea' | 'interests' | 'quiz') => void;
 }) {
+  const choices = [
+    {
+      id: 'dream',
+      name: 'I have a dream',
+      desc: 'I know what I want to become.',
+      Icon: Rocket,
+    },
+    {
+      id: 'ideas',
+      name: 'I have a few ideas',
+      desc: 'I know what interests me, but I’m not sure yet.',
+      Icon: Lightbulb,
+    },
+    {
+      id: 'none',
+      name: 'I have no idea',
+      desc: 'I’m still figuring out what I want.',
+      Icon: Compass,
+    },
+  ] as const;
   return (
-    <div className="h-full bg-white px-5 pt-3">
+    <div className="onboarding-start h-full bg-white px-5 pt-4">
       <div className="flex h-11 items-center gap-3">
         <button
           type="button"
@@ -101,33 +166,20 @@ export function StartingPoint({
         </button>
         <span className="text-xs font-extrabold" />
       </div>
-      {headline(
-        'Where are you right now?',
-        'Everyone’s journey is different. Tell us where you are so we can support you better.',
-      )}
+      <div className="mb-6 mt-3">
+        <h1 className="max-w-[310px] text-[34px] font-extrabold leading-[1.06] tracking-[-.06em]">
+          Where are you
+          <br />
+          right now?
+        </h1>
+        <p className="mt-3 text-[14px] leading-relaxed text-navy/70">
+          Everyone’s journey is different.
+          <br />
+          Tell us where you are so we can support you better.
+        </p>
+      </div>
       <div className="space-y-3">
-        {(
-          [
-            [
-              'dream',
-              'I have a dream',
-              'I know what I want to become.',
-              'rocket',
-            ],
-            [
-              'ideas',
-              'I have a few ideas',
-              'I know what interests me, but I’m not sure yet.',
-              'lightbulb',
-            ],
-            [
-              'none',
-              'I have no idea',
-              'I’m still figuring out what I want.',
-              'compass',
-            ],
-          ] as const
-        ).map(([id, name, desc, icon]) => (
+        {choices.map(({ id, name, desc, Icon: ChoiceIcon }) => (
           <button
             type="button"
             key={id}
@@ -136,17 +188,22 @@ export function StartingPoint({
               update({ start: id });
               setError('');
             }}
-            className={`flex min-h-[112px] w-full items-center gap-3 rounded-[20px] border-2 p-4 text-left ${profile.start === id ? 'border-lime bg-lime/10' : 'border-navy/8 bg-white shadow-sm'}`}
+            className={`flex min-h-[116px] w-full items-center justify-between gap-2 overflow-hidden rounded-[18px] border-2 py-3 pl-5 pr-2 text-left ${profile.start === id ? 'border-lime bg-white' : 'border-navy/6 bg-white shadow-sm'}`}
           >
-            <div
-              className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${profile.start === id ? 'bg-lime' : 'bg-purple/10 text-purple'}`}
+            <div className="min-w-0 flex-1">
+              <strong className="text-[17px] font-extrabold tracking-[-.04em]">
+                {name}
+              </strong>
+              <p className="mt-1 text-[13px] leading-snug text-navy/75">
+                {desc}
+              </p>
+            </div>
+            <span
+              className={`flex h-20 w-20 shrink-0 items-center justify-center rounded-[18px] ${id === 'dream' ? 'bg-[#e9eff8] text-navy' : id === 'ideas' ? 'bg-purple/10 text-purple' : 'bg-lime/15 text-purple'}`}
+              aria-hidden="true"
             >
-              <Icon name={icon} size={30} />
-            </div>
-            <div>
-              <strong className="text-base font-extrabold">{name}</strong>
-              <p className="mt-1 text-xs leading-snug text-navy/65">{desc}</p>
-            </div>
+              <ChoiceIcon size={46} weight="duotone" />
+            </span>
           </button>
         ))}
       </div>
@@ -170,6 +227,7 @@ export function StartingPoint({
       {bottom(
         <Button
           variant="navy"
+          className="!rounded-full !text-[16px]"
           onClick={() => {
             if (!profile.start) {
               setError('Choose a starting point.');
@@ -188,7 +246,7 @@ export function StartingPoint({
             );
           }}
         >
-          Continue <ArrowRight size={18} />
+          Continue
         </Button>,
       )}
     </div>
@@ -201,8 +259,7 @@ export function Quiz({
   setQ,
   setProfile,
   setError,
-  top,
-  headline,
+  onBack,
   bottom,
   onComplete,
 }: {
@@ -211,86 +268,128 @@ export function Quiz({
   setQ: (value: number) => void;
   setProfile: (update: (profile: Profile) => Profile) => void;
   setError: (value: string) => void;
-  top: () => ReactNode;
-  headline: (text: string, sub: string) => ReactNode;
+  onBack: () => void;
   bottom: (content: ReactNode) => ReactNode;
   onComplete: () => void;
 }) {
   const item = questions[q],
     choices = profile.answers[q];
+  const activityIcons = [
+    Palette,
+    Lightbulb,
+    Heart,
+    UsersThree,
+    ChartBar,
+    Cube,
+    ChatCircleDots,
+    CalendarBlank,
+    PaperPlaneTilt,
+  ];
   return (
-    <div className="relative h-full bg-white px-5 pt-3">
-      {top()}
-      <p className="mt-4 text-xs font-bold text-navy/65">
-        Question {q + 1} of {questions.length}
-      </p>
-      <div className="mt-3">
-        <Bar value={(q + 1) * 10} />
+    <div className="onboarding-quiz relative h-full bg-white px-5 pt-4">
+      <div className="flex items-center justify-between text-[13px] font-semibold text-navy/70">
+        <span>
+          Question {q + 1} of {questions.length}
+        </span>
+        <button
+          type="button"
+          onClick={onBack}
+          className="rounded-lg px-2 py-1 text-xs font-bold text-purple"
+        >
+          Back
+        </button>
       </div>
-      <div className="mt-8">
-        {headline(item.title, 'Select up to 3 options')}
+      <div
+        className="onboarding-quiz-progress mt-4 h-3 overflow-hidden rounded-full bg-navy/10"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={questions.length}
+        aria-valuenow={q + 1}
+        aria-label="Quiz progress"
+      >
+        <div
+          className="h-full rounded-full bg-lime"
+          style={{ width: `${((q + 1) / questions.length) * 100}%` }}
+        />
       </div>
-      <div className="grid grid-cols-3 gap-2">
-        {item.choices.map((x, i) => (
-          <button
-            type="button"
-            aria-pressed={choices.includes(x)}
-            onClick={() => {
-              setError('');
-              const next = choices.includes(x)
-                ? choices.filter((c) => c !== x)
-                : choices.length < 3
-                  ? [...choices, x]
-                  : choices;
-              if (choices.length === 3 && !choices.includes(x)) {
-                setError('Choose up to 3 options.');
-                return;
-              }
-              setProfile((p) => ({
-                ...p,
-                answers: p.answers.map((v, j) => (j === q ? next : v)),
-              }));
-            }}
-            key={x}
-            className={`flex min-h-[97px] flex-col items-center justify-center gap-2 rounded-2xl border-2 p-2 text-center text-[11px] font-bold leading-tight ${choices.includes(x) ? 'border-lime bg-navy text-white' : 'border-navy/8 bg-white text-navy'}`}
-          >
-            <Icon
-              name={
-                [
-                  'pen',
-                  'lightbulb',
-                  'heart',
-                  'users',
-                  'chart',
-                  'code',
-                  'chat',
-                  'book',
-                  'paperPlane',
-                ][i]
-              }
-              size={25}
-              className={choices.includes(x) ? 'text-lime' : 'text-purple'}
-            />
-            {x}
-          </button>
-        ))}
+      <div className="mb-7 mt-7">
+        <h1 className="text-[clamp(26px,8vw,32px)] font-extrabold leading-[1.1] tracking-[-.06em]">
+          {item.title}
+        </h1>
+        <p className="mt-3 text-[14px] text-navy/70">Select up to 3 options</p>
+      </div>
+      <div className="grid grid-cols-3 gap-2.5">
+        {item.choices.map((x, i) => {
+          const ActivityIcon = activityIcons[i];
+          return (
+            <button
+              type="button"
+              aria-pressed={choices.includes(x)}
+              onClick={() => {
+                setError('');
+                const next = choices.includes(x)
+                  ? choices.filter((c) => c !== x)
+                  : choices.length < 3
+                    ? [...choices, x]
+                    : choices;
+                if (choices.length === 3 && !choices.includes(x)) {
+                  setError('Choose up to 3 options.');
+                  return;
+                }
+                setProfile((p) => ({
+                  ...p,
+                  answers: p.answers.map((v, j) => (j === q ? next : v)),
+                }));
+              }}
+              key={x}
+              className={`flex min-h-[112px] flex-col items-center justify-center gap-2 rounded-[18px] border-2 p-2 text-center text-[12px] font-semibold leading-tight ${choices.includes(x) ? 'border-lime bg-navy text-white' : 'border-navy/8 bg-white text-navy'}`}
+            >
+              {q === 0 ? (
+                <ActivityIcon
+                  size={32}
+                  weight="duotone"
+                  className={choices.includes(x) ? 'text-lime' : 'text-purple'}
+                />
+              ) : (
+                <Icon
+                  name={
+                    [
+                      'pen',
+                      'lightbulb',
+                      'heart',
+                      'users',
+                      'chart',
+                      'code',
+                      'chat',
+                      'book',
+                      'paperPlane',
+                    ][i]
+                  }
+                  size={32}
+                  className={choices.includes(x) ? 'text-lime' : 'text-purple'}
+                />
+              )}
+              {x}
+            </button>
+          );
+        })}
       </div>
       {bottom(
         <Button
           variant="navy"
+          className="!rounded-full !text-[16px]"
           onClick={() => {
             if (!choices.length) {
               setError('Pick at least one option.');
               return;
             }
-            if (q < 9) {
+            if (q < questions.length - 1) {
               setQ(q + 1);
               setError('');
             } else onComplete();
           }}
         >
-          {q === 9 ? 'See My Explorer Profile' : 'Next'}{' '}
-          <ArrowRight size={18} />
+          {q === questions.length - 1 ? 'See My Explorer Profile' : 'Next'}
         </Button>,
       )}
     </div>
@@ -299,42 +398,40 @@ export function Quiz({
 
 export function NoIdea({
   top,
-  headline,
   bottom,
   onContinue,
 }: {
   top: () => ReactNode;
-  headline: (title: string, sub: string) => ReactNode;
   bottom: (content: ReactNode) => ReactNode;
   onContinue: () => void;
 }) {
   return (
     <div className="relative h-full overflow-hidden bg-navy px-6 pt-8 text-white">
       {top()}
-      {headline(
-        'That’s okay. Let’s start small.',
-        'You don’t need all the answers today. Just take the first step.',
-      )}
-      <div className="mt-7 space-y-4">
+      <div className="mt-8">
+        <h1 className="text-[32px] font-extrabold leading-[1.05] tracking-[-.055em]">That’s okay.<br />Let’s start small.</h1>
+        <p className="mt-4 text-[14px] leading-relaxed text-white/80">You don’t need all the answers today.<br />Just take the first step.</p>
+      </div>
+      <div className="mt-9 space-y-4">
         {[
-          'Discover yourself',
-          'Try something',
-          'Reflect',
-          'Explore possibilities',
-          'Build a direction',
-        ].map((x, i) => (
+          ['Discover yourself', 'Find out what you enjoy'],
+          ['Try something', 'Experience real activities'],
+          ['Reflect', 'Learn what feels right'],
+          ['Explore possibilities', 'See fields and careers'],
+          ['Build a direction', 'Create your personal path'],
+        ].map(([x, desc], i) => (
           <div key={x} className="flex items-center gap-4">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime text-sm font-extrabold text-navy">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-lime text-[19px] font-extrabold text-navy">
               {i + 1}
             </span>
             <div>
-              <p className="text-[10px] font-bold text-lime">STEP {i + 1}</p>
-              <p className="text-sm font-extrabold">{x}</p>
+              <p className="text-[14px] font-extrabold">{x}</p>
+              <p className="text-[12px] text-white/70">{desc}</p>
             </div>
           </div>
         ))}
       </div>
-      <Mascot size={170} className="absolute bottom-16 right-[-22px]" />
+      <Mascot size={170} className="pointer-events-none absolute bottom-20 right-[-36px]" />
       {bottom(
         <Button onClick={onContinue}>
           Start My First Exploration <ArrowRight size={17} />
@@ -403,7 +500,6 @@ export function Interests({
 
 export function ExplorerProfile({
   profile,
-  top,
   headline,
   sections,
   coaching,
@@ -411,7 +507,6 @@ export function ExplorerProfile({
   continueJourney,
 }: {
   profile: Profile;
-  top: () => ReactNode;
   headline: (title: string, sub: string) => ReactNode;
   sections: (items: string[]) => ReactNode;
   coaching: (text: string) => ReactNode;
@@ -419,29 +514,32 @@ export function ExplorerProfile({
   continueJourney: () => void;
 }) {
   return (
-    <div className="relative h-full bg-paper px-5 pt-3">
-      {top()}
+    <div className="relative h-full bg-white px-5 pt-5">
+      <div className="relative">
       {headline(
         'Here’s what we’re discovering about you.',
         'Your results show your interests, strengths, and values. This is your starting point, not a limit.',
       )}
-      <div className="mb-4 flex gap-2">
+      <Mascot size={90} className="absolute right-0 top-4" />
+      </div>
+      <h2 className="mb-3 text-[15px] font-extrabold">Top Interests</h2>
+      <div className="mb-6 flex gap-2">
         {profile.answers[0].slice(0, 3).map((x, i) => (
-          <Card key={x} className="flex-1 !p-2 text-center">
+          <Card key={x} className="flex-1 !p-3 text-center">
             <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-lime">
               <Icon name={['chart', 'pen', 'code'][i]} size={22} />
             </div>
-            <p className="text-[10px] font-extrabold leading-tight">{x}</p>
+            <p className="text-[12px] font-extrabold leading-tight">{x}</p>
           </Card>
         ))}
       </div>
-      <Label>YOUR STRENGTHS</Label>
+      <h2 className="mb-3 text-[15px] font-extrabold">Key Strengths</h2>
       {sections(profile.answers[1])}
-      <div className="mt-5">
-        <Label>YOUR VALUES</Label>
+      <div className="mt-6">
+        <h2 className="mb-3 text-[15px] font-extrabold">Core Values</h2>
         {sections(profile.answers[2])}
       </div>
-      <div className="mt-6">
+      <div className="mt-7">
         {coaching(
           'You’re not defined by one result. Think of this as your starting point.',
         )}

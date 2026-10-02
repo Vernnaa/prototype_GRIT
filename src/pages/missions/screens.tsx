@@ -4,7 +4,6 @@ import {
   Camera,
   Check,
   Lightbulb,
-  Sparkle,
 } from '@phosphor-icons/react';
 import { fields, missions, type Field, type Mission } from '../../content';
 import { completeMission, type Profile, type Reflection } from '../../model';
@@ -31,18 +30,17 @@ export function MissionWorkspace({
 }) {
   const steps = profile.steps[mission.id] || [];
   return (
-    <div className="relative h-full px-5 pt-3">
-      {top('Your mission')}
-      <h1 className="mt-6 text-2xl font-extrabold leading-tight">
+    <div className="relative h-full bg-white px-5 pt-3">
+      {top('')}
+      <h1 className="mt-3 text-[25px] font-extrabold leading-tight tracking-[-.05em]">
         {mission.title}
       </h1>
-      <p className="mt-2 text-xs text-navy/60">
+      <p className="mt-3 text-[13px] text-navy/65">
         {steps.length} / {mission.steps.length} steps completed · {mission.time}
       </p>
       <div className="my-5">
         <Bar value={(steps.length / mission.steps.length) * 100} />
       </div>
-      <Label>YOUR CHECKLIST</Label>
       <div className="space-y-2">
         {mission.steps.map((s, i) => (
           <button
@@ -63,23 +61,23 @@ export function MissionWorkspace({
                 };
               })
             }
-            className={`flex min-h-16 w-full items-center gap-3 rounded-2xl p-3 text-left ${steps.includes(i) ? 'bg-lime/20' : 'bg-white'}`}
+            className="flex min-h-[68px] w-full items-center gap-3 rounded-2xl border border-navy/8 bg-white p-2.5 text-left shadow-sm"
           >
             <span
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-extrabold ${steps.includes(i) ? 'bg-lime' : 'bg-paper'}`}
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-extrabold ${steps.includes(i) ? 'bg-navy text-lime' : 'bg-paper'}`}
             >
               {steps.includes(i) ? <Check size={18} /> : i + 1}
             </span>
-            <span className="text-xs font-bold">
+            <span className="text-[13px] font-semibold">
               {s}
               <small className="block pt-1 font-medium text-navy/50">
-                {steps.includes(i) ? 'Completed' : 'Tap when you’re done'}
+                  {steps.includes(i) ? 'Completed' : 'Tap when you’re done'}
               </small>
             </span>
           </button>
         ))}
       </div>
-      <div className="mt-5">
+      <div className="mt-6">
         {coaching('You’re doing great. One step at a time.')}
       </div>
       <label className="mt-4 flex min-h-11 items-center gap-2 text-xs font-bold">
@@ -145,20 +143,20 @@ export function MissionReflection({
   bottom: (content: ReactNode) => ReactNode;
 }) {
   return (
-    <div className="relative h-full px-5 pt-3">
+    <div className="relative h-full bg-white px-5 pt-3">
       {top('Reflect')}
       {headline(
         'How did that feel?',
         'Your experience matters. Let’s reflect on what you just did.',
       )}
-      <Label>DID YOU ENJOY THIS?</Label>
+      <h2 className="mb-3 text-sm font-extrabold">Did you enjoy this?</h2>
       <div className="mb-6 grid grid-cols-4 gap-2">
         {['Loved it', 'Liked it', 'It was okay', 'Not for me'].map((x, i) => (
           <button
             aria-pressed={feeling === x}
             onClick={() => setFeeling(x)}
             key={x}
-            className={`flex min-h-20 flex-col items-center justify-center rounded-xl border-2 p-1 text-center text-[10px] font-bold ${feeling === x ? 'border-lime bg-navy text-white' : 'border-navy/8 bg-white'}`}
+            className={`flex min-h-[92px] flex-col items-center justify-center rounded-xl border-2 p-1 text-center text-[11px] font-bold ${feeling === x ? 'border-lime bg-navy text-white' : 'border-navy/8 bg-white'}`}
           >
             <span
               className={`mb-2 text-xl ${feeling === x ? 'text-lime' : 'text-purple'}`}
@@ -169,7 +167,7 @@ export function MissionReflection({
           </button>
         ))}
       </div>
-      <label className="block text-xs font-extrabold">
+      <label className="block text-[13px] font-extrabold">
         What did you enjoy most?
         <textarea
           value={enjoyed}
@@ -178,7 +176,7 @@ export function MissionReflection({
           className="mt-2 h-20 w-full resize-none rounded-xl border border-navy/10 bg-white p-3 text-xs font-medium"
         />
       </label>
-      <label className="mt-5 block text-xs font-extrabold">
+      <label className="mt-5 block text-[13px] font-extrabold">
         What felt challenging?
         <textarea
           value={challenge}
@@ -188,7 +186,7 @@ export function MissionReflection({
         />
       </label>
       <div className="mt-5">
-        <Label>WOULD YOU TRY SOMETHING SIMILAR?</Label>
+        <h2 className="mb-3 text-[13px] font-extrabold">Would you like to try something similar?</h2>
         <div className="grid grid-cols-2 gap-2">
           {['Yes', 'Not sure yet'].map((x) => (
             <Chip key={x} active={again === x} onClick={() => setAgain(x)}>
@@ -243,7 +241,7 @@ export function Missions({
   missionCard: (mission: Mission) => ReactNode;
 }) {
   return (
-    <div className="px-5 pt-5">
+    <div className="bg-white px-5 pt-5">
       {headline(
         'Don’t just imagine it. Try it.',
         'Real experiences help you understand what fits you.',
@@ -253,21 +251,12 @@ export function Missions({
         <Chip onClick={() => chooseMission(suggested.id)}>For you</Chip>
         <Chip onClick={onProgress}>Completed</Chip>
       </div>
-      <Card
-        onClick={() => chooseMission(suggested.id)}
-        className="mb-5 !bg-navy text-white"
-      >
-        <div className="flex justify-between">
-          <Label>RECOMMENDED NEXT STEP</Label>
-          <Sparkle size={19} className="text-lime" />
-        </div>
-        <h2 className="text-xl font-extrabold">{suggested.title}</h2>
-        <p className="mt-2 text-xs text-white/70">{suggested.goal}</p>
-        <p className="mt-3 text-xs font-bold text-lime">
-          {suggested.time} · +{suggested.xp} XP ↗
-        </p>
+      <Card onClick={() => chooseMission(suggested.id)} className="mb-5 overflow-hidden !p-0">
+        <div className="flex h-40 items-center justify-center bg-[#e8e4ff] text-purple"><Icon name={suggested.icon} size={92} /></div>
+        <div className="p-4"><h2 className="text-[19px] font-extrabold leading-tight">{suggested.title}</h2><p className="mt-2 text-xs font-bold text-navy/60">{fields.find(f => f.id === suggested.field)?.name} · Beginner</p><p className="mt-3 text-xs text-navy/70">{suggested.time} · +{suggested.xp} XP</p><p className="mt-2 text-[13px] text-navy/70">{suggested.goal}</p></div>
       </Card>
-      <Label>MORE TO TRY</Label>
+      <Button onClick={() => chooseMission(suggested.id)} className="mb-6">Start Mission</Button>
+      <h2 className="mb-3 text-[16px] font-extrabold">More to try</h2>
       {missions.map(missionCard)}
     </div>
   );
@@ -291,11 +280,9 @@ export function MissionDetail({
   onStart: () => void;
 }) {
   return (
-    <div className="relative h-full px-5 pt-3">
+    <div className="relative h-full bg-white px-5 pt-3">
       {top('Mission details')}
-      <div className="mt-5 flex h-32 items-center justify-center rounded-[22px] bg-purple/15 text-purple">
-        <Icon name={mission.icon} size={72} />
-      </div>
+      <div className="mt-4 flex h-36 items-center justify-center rounded-[22px] bg-[#e8e4ff] text-purple"><Icon name={mission.icon} size={84} /></div>
       <div className="mt-5">{headline(mission.title, mission.goal)}</div>
       <div className="mb-5 flex gap-2">
         {sections([
@@ -355,7 +342,7 @@ export function Insight({
   continueJourney: () => void;
 }) {
   return (
-    <div className="relative h-full px-5 pt-3">
+    <div className="relative h-full bg-white px-5 pt-3">
       {top('Your insight')}
       <div className="mb-5 mt-8 flex h-24 w-24 items-center justify-center rounded-[26px] bg-lime">
         <Lightbulb size={52} weight="duotone" />

@@ -103,7 +103,7 @@ export function Button({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className={`flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-[14px] font-extrabold transition-transform ${variant === 'lime' ? 'bg-lime text-navy' : variant === 'navy' ? 'bg-navy text-white' : variant === 'white' ? 'bg-white text-navy' : 'border-[1.5px] border-navy bg-transparent text-navy'} ${className}`}
+      className={`flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-5 text-[14px] font-extrabold transition-transform ${variant === 'lime' ? 'bg-lime text-navy' : variant === 'navy' ? 'bg-navy text-white' : variant === 'white' ? 'bg-white text-navy' : 'border-[1.5px] border-navy bg-transparent text-navy'} ${className}`}
     >
       {children}
     </button>

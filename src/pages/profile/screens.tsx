@@ -9,7 +9,6 @@ import {
   UsersThree,
 } from '@phosphor-icons/react';
 import type { Profile } from '../../model';
-import { level, levelNames } from '../../model';
 import { Bar, Card, Icon } from '../../components/AppUI';
 import type { Screen } from '../../components/AppShell';
 
@@ -23,16 +22,15 @@ export function ProfilePage({
   setModal: (modal: string) => void;
 }) {
   return (
-    <div className="px-5 pt-5">
-      <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple/15 text-purple">
+    <div className="bg-white px-5 pt-6">
+      <div className="mb-7 flex items-center gap-4">
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-purple/15 text-purple">
           <UserCircle size={48} />
         </div>
         <div className="flex-1">
-          <h1 className="text-xl font-extrabold">{profile.name}</h1>
-          <p className="text-xs text-navy/60">
-            {levelNames[level(profile.xp) - 1]} · Level {level(profile.xp)}
-          </p>
+          <h1 className="text-[23px] font-extrabold">{profile.name}</h1>
+          <p className="text-[13px] text-navy/60">Exploring their future</p>
+          <button className="mt-2 rounded-full bg-paper px-4 py-1.5 text-xs font-bold" onClick={() => setModal('name')}>Edit Profile</button>
         </div>
         <button aria-label="Edit profile" onClick={() => setModal('name')}>
           <PencilSimple size={18} />
@@ -63,10 +61,10 @@ export function ProfilePage({
           onClick={() =>
             target.endsWith('View') ? setModal(target) : go(target as Screen)
           }
-          className="flex min-h-[48px] w-full items-center gap-3 border-b border-navy/8 text-left"
+          className="flex min-h-[52px] w-full items-center gap-3 border-b border-navy/8 text-left"
         >
           <Icon name={icon} size={18} className="text-purple" />
-          <span className="flex-1 text-xs font-bold">{name}</span>
+          <span className="flex-1 text-[13px] font-semibold">{name}</span>
           <CaretRight size={16} />
         </button>
       ))}

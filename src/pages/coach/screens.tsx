@@ -18,22 +18,22 @@ export function Coach({
 }) {
   return (
     <div className="flex h-full flex-col bg-white">
-      <div className="flex items-center gap-3 border-b border-navy/8 px-5 pb-3 pt-5">
+      <div className="flex items-center gap-3 px-5 pb-4 pt-5">
         <button onClick={back} aria-label="Go back">
           <ArrowLeft size={20} />
         </button>
-        <Mascot size={42} />
+        <Mascot size={48} />
         <div>
-          <p className="text-sm font-extrabold">GRIT Coach</p>
+          <p className="text-[15px] font-extrabold">GRIT Coach</p>
           <p className="text-[10px] text-navy/50">
             Prototype companion · No pressure
           </p>
         </div>
       </div>
-      <div className="screen-scroll min-h-0 flex-1 space-y-4 px-5 py-5">
+      <div className="screen-scroll min-h-0 flex-1 space-y-4 px-5 py-6">
         <div className="flex items-start gap-2">
           <Mascot size={35} />
-          <p className="max-w-[80%] rounded-2xl rounded-tl-sm bg-paper p-3 text-xs leading-relaxed">
+          <p className="max-w-[80%] rounded-2xl rounded-tl-sm bg-paper p-4 text-[13px] leading-relaxed">
             Hey! I’m here to help you figure things out — no pressure. What’s on
             your mind?
           </p>
@@ -51,10 +51,8 @@ export function Coach({
             </p>
           </div>
         ))}
-        <p className="text-[10px] font-bold text-navy/45">
-          WHAT WOULD YOU LIKE TO TALK ABOUT?
-        </p>
-        <div className="flex flex-wrap gap-2">
+        <p className="text-[13px] font-semibold text-navy/70">What would you like to talk about?</p>
+        <div className="flex flex-col items-start gap-2 pl-10">
           {[
             'What careers could fit me?',
             'Why might marketing fit me?',
@@ -65,7 +63,7 @@ export function Coach({
             <button
               onClick={() => ask(x)}
               key={x}
-              className="rounded-xl border border-navy/10 px-3 py-2 text-left text-[11px] font-semibold"
+              className="rounded-full border border-navy/15 bg-white px-4 py-2 text-left text-[12px] font-semibold"
             >
               {x}
             </button>
@@ -84,7 +82,7 @@ export function Coach({
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type a message..."
           aria-label="Message GRIT Coach"
-          className="min-w-0 flex-1 rounded-xl bg-paper px-3 text-xs"
+          className="min-w-0 flex-1 rounded-full border border-navy/10 bg-white px-4 text-[13px]"
         />
         <button
           aria-label="Send message"

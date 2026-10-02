@@ -130,17 +130,15 @@ export default function App() {
       onClick={() => chooseField(f.id)}
       className="mb-3 flex items-center gap-3 !p-3.5"
     >
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-purple/12 text-purple">
+      <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-purple text-white">
         <Icon name={f.icon} size={26} />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-extrabold leading-tight">{f.name}</p>
+        <p className="text-[13px] font-extrabold leading-tight">{f.name}</p>
         <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-navy/60">
           {f.summary}
         </p>
-        <span className="mt-1 inline-block text-[10px] font-extrabold text-purple">
-          Worth exploring
-        </span>
+        <span className="mt-2 inline-block rounded-full bg-lime px-2 py-0.5 text-[10px] font-extrabold text-navy">Worth exploring</span>
       </div>
       <ArrowUpRight size={18} />
     </Card>
@@ -191,11 +189,11 @@ export default function App() {
   );
   const headline = (text: string, sub?: string) => (
     <div className="mb-6">
-      <h1 className="text-[30px] font-extrabold leading-[1.09] tracking-[-.06em]">
+      <h1 className="text-[32px] font-extrabold leading-[1.08] tracking-[-.06em]">
         {text}
       </h1>
       {sub && (
-        <p className="mt-2 text-[13px] leading-relaxed text-navy/65">{sub}</p>
+        <p className="mt-3 text-[14px] leading-relaxed text-navy/65">{sub}</p>
       )}
     </div>
   );
@@ -246,7 +244,6 @@ export default function App() {
     case 'welcome':
       body = (
         <Welcome
-          headline={headline}
           onContinue={() => go('start')}
           onDream={() => {
             update({ start: 'dream' });
@@ -262,7 +259,6 @@ export default function App() {
           update={update}
           setError={setError}
           back={back}
-          headline={headline}
           bottom={bottom}
           go={go}
         />
@@ -272,7 +268,6 @@ export default function App() {
       body = (
         <NoIdea
           top={top}
-          headline={headline}
           bottom={bottom}
           onContinue={() => {
             setQ(0);
@@ -303,8 +298,7 @@ export default function App() {
           setQ={setQ}
           setProfile={setProfile}
           setError={setError}
-          top={top}
-          headline={headline}
+          onBack={() => (q > 0 ? setQ(q - 1) : back())}
           bottom={bottom}
           onComplete={() => go('explorer')}
         />
@@ -315,7 +309,6 @@ export default function App() {
       body = (
         <ExplorerProfile
           profile={profile}
-          top={top}
           headline={headline}
           sections={sections}
           coaching={coaching}
@@ -490,7 +483,6 @@ export default function App() {
           profile={profile}
           tab={tab}
           setTab={setTab}
-          top={top}
           headline={headline}
           onAchievements={() => go('achievements')}
         />

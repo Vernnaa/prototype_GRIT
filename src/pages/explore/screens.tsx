@@ -30,19 +30,19 @@ export function Explore({
         .includes(search.toLowerCase()),
   );
   return (
-    <div className="h-full px-5 pt-5">
+    <div className="h-full bg-white px-5 pt-7">
       {headline(
         'Your possibilities are bigger than you think.',
         'Explore paths that connect with what you’re discovering about yourself.',
       )}
-      <label className="mb-4 flex h-11 items-center gap-2 rounded-xl border border-navy/10 bg-white px-3">
+      <label className="mb-4 flex h-12 items-center gap-2 rounded-full border border-navy/10 bg-white px-4">
         <MagnifyingGlass size={17} />
         <input
           aria-label="Search fields or careers"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search fields or careers..."
-          className="w-full bg-transparent text-xs outline-none"
+          className="w-full bg-transparent text-[13px] outline-none"
         />
       </label>
       <div className="-mx-5 mb-4 flex gap-2 overflow-x-auto px-5 pb-2">
@@ -98,7 +98,7 @@ export function FieldDetail({
   chooseMission: (id: string) => void;
 }) {
   return (
-    <div className="px-5 pt-3">
+    <div className="bg-white px-5 pt-3">
       {top('Explore a field')}
       <div className="mt-5 flex items-center gap-3">
         <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple text-white">
@@ -111,27 +111,27 @@ export function FieldDetail({
           <p className="text-xs font-semibold text-navy/55">{field.category}</p>
         </div>
       </div>
-      <div className="my-5 flex h-36 items-center justify-center overflow-hidden rounded-[22px] bg-navy">
-        <div className="relative flex h-24 w-48 items-center justify-center rounded-2xl border border-white/30 bg-white/10 text-lime">
-          <Icon name={field.icon} size={72} />
-          <span className="absolute -right-10 -top-4 text-5xl">↗</span>
+      <div className="my-6 flex h-44 items-center justify-center overflow-hidden rounded-[20px] bg-[#e9e6ff]">
+        <div className="relative flex h-32 w-48 -rotate-6 items-center justify-center rounded-[20px] bg-white shadow-xl text-purple">
+          <Icon name={field.icon} size={82} />
+          <span className="absolute -right-8 -top-4 rounded-full bg-lime px-3 py-1 text-xl text-navy">↗</span>
         </div>
       </div>
-      <Label>WHAT IS IT?</Label>
-      <p className="mb-5 text-[13px] leading-relaxed">{field.summary}</p>
-      <Label>WHY IT MAY FIT YOU</Label>
+      <h2 className="mb-2 text-[17px] font-extrabold">What is it?</h2>
+      <p className="mb-6 text-[14px] leading-relaxed text-navy/70">{field.summary}</p>
+      <h2 className="mb-3 text-[17px] font-extrabold">Why it may fit you</h2>
       <ul className="mb-5 space-y-2">
         {field.tags.slice(0, 3).map((x) => (
           <li className="flex items-center gap-2 text-xs" key={x}>
-            <Check size={16} className="text-purple" />
+            <Check size={17} weight="bold" className="rounded-full bg-navy p-0.5 text-white" />
             You enjoy {x.toLowerCase()}
           </li>
         ))}
       </ul>
-      <Label>WHAT YOU MIGHT DO</Label>
+      <h2 className="mb-3 text-[17px] font-extrabold">What you might do</h2>
       {sections(field.activities)}
       <div className="mt-5">
-        <Label>RELATED CAREERS</Label>
+        <h2 className="mb-3 text-[17px] font-extrabold">Related careers</h2>
         {sections(field.careers)}
       </div>
       <div className="mt-5">
@@ -148,7 +148,8 @@ export function FieldDetail({
       <p className="mt-5 text-xs font-extrabold text-purple">
         This could be worth exploring.
       </p>
-      <div className="mt-5 grid grid-cols-2 gap-2">
+      <div className="mt-6 flex flex-col gap-2">
+        <Button onClick={() => chooseMission(field.mission)}>Try This Field</Button>
         <Button
           variant="outline"
           onClick={() =>
@@ -160,9 +161,6 @@ export function FieldDetail({
           }
         >
           {profile.saved.includes(field.id) ? 'Saved ✓' : 'Save for Later'}
-        </Button>
-        <Button onClick={() => chooseMission(field.mission)}>
-          Try This Field
         </Button>
       </div>
     </div>

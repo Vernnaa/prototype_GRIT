@@ -53,13 +53,8 @@ export function AppShell({
     'welcome',
     'start',
     'quiz',
-    'explorer',
     'noidea',
     'interests',
-    'workspace',
-    'reflection',
-    'insight',
-    'coach',
   ].includes(screen);
   return (
     <div className="app-viewport bg-paper">
@@ -72,14 +67,14 @@ export function AppShell({
         </div>
         {navVisible && (
           <>
-            <button
+            {screen !== 'coach' && <button
               type="button"
               aria-label="Open GRIT Coach"
               onClick={() => go('coach')}
               className="coach-shortcut absolute bottom-[calc(75px+env(safe-area-inset-bottom))] right-5 z-10 flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-white bg-purple text-white shadow-lg"
             >
               <Sparkle size={24} />
-            </button>
+            </button>}
             <nav
               className="tabbar relative z-10 flex h-[calc(75px+env(safe-area-inset-bottom))] shrink-0 items-start justify-around border-t border-navy/8 bg-white pt-3 pb-[env(safe-area-inset-bottom)]"
               aria-label="Main navigation"
@@ -90,6 +85,8 @@ export function AppShell({
                   (['field', 'compare'].includes(screen) &&
                     t.id === 'explore') ||
                   (screen === 'mission' && t.id === 'missions') ||
+                  (['workspace', 'reflection', 'insight'].includes(screen) &&
+                    t.id === 'missions') ||
                   ([
                     'direction',
                     'recommend',
