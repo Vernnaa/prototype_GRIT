@@ -1,5 +1,9 @@
 # GRIT — From Dream to Direction
 
+## Current app entry (React + Tailwind v4)
+
+The active prototype now starts from `src/main.tsx` → `src/FreshApp.tsx` and `src/style.css`. `src/content.ts` contains the new fields, missions and ten questions; `src/model.ts` owns local state under `grit-fresh-v1`. The earlier `src/App.tsx` and related pages remain in the repository as inactive legacy work. `references/screen/references_screen.jpeg` is the whole-app visual guide; `references/screen/screen-1.png` shows detail for the first four screens. Mascot art is imported directly from `references/maskot/`. Brand colors for the active app are exactly `#172033`, `#B7F34A`, `#7C5CFC`, `#F7F7F2`, `#FFFFFF`, and `#10141F`. Keep Vite's `/prototype_GRIT/` base for GitHub Pages.
+
 ## Purpose
 
 Mobile-first, interactive career exploration prototype for students aged 15–21. Guide users through **Explore → Experience → Reflect → Decide → Progress**. Never claim one perfect career or require a career decision before exploration. Each screen offers one clear next action.
@@ -22,6 +26,7 @@ Derived muted text, borders and tracks use transparent navy; no new accent color
 - Font: **Manrope**, weights 400/500/600/700/800; system sans-serif fallback. Major headings 800, section titles 700, controls 600–700, body 400–500. Use compact line height and slightly tight tracking on headings.
 - 8px spacing rhythm, with 16–24px horizontal page margins. Minimum touch target 44px. Container radius 18–20px; inner controls 10–14px. Use soft navy-tinted shadow only where elevation helps hierarchy.
 - Layout shows phone UI only: centered phone frame on desktop, edge-to-edge on mobile. No explanatory copy or marketing panel beside device. Keep actions and bottom navigation reachable. Show pressed, selected and keyboard focus states; respect reduced-motion preference.
+- Onboarding (`splash` → `welcome` → `start` → `questions`) follows `references/screen/screen-1.png`: white screens with deep navy `#062B49`, vivid lime `#C8FF00`, restrained purple illustration details, pill CTAs, and large transparent mascot art from `references/maskot/`. The splash is navy. Quiz progress reflects the three actual question groups, not the mockup's 10-question label.
 - React + Vite + TypeScript is active app in `src/`. `App.tsx` handles route/state coordination; `Layout.tsx` owns phone chrome; `components/` contains shared UI; each feature routes through `pages/<feature>/page.tsx`, with feature-specific UI under its local `components/`. `state.ts` owns reducer/persistence and `data.ts` typed prototype content. Route via `location.hash` for GitHub Pages. `index.html` remains Vite's minimal document shell; all app UI is TSX.
 
 ## Components and navigation

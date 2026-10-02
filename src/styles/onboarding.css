@@ -1,0 +1,86 @@
+/* The first four screens share one mobile canvas; later journey screens keep their own styles. */
+.onboarding-screen { background: #fff; color: #062b49; }
+.onboarding-screen h1 { font-size: clamp(2.25rem, 9.2vw, 2.7rem); line-height: 1.08; letter-spacing: -.055em; margin-bottom: 1.15rem; }
+.onboarding-screen .lead { color: #536274; font-size: .875rem; line-height: 1.55; max-width: 31ch; }
+.onboarding-screen .top { height: 3.4rem; padding-inline: 1.1rem; }
+.onboarding-screen .back { width: 44px; height: 44px; font-size: 1.7rem; }
+.onboarding-screen .scroll { padding: 1rem 1.5rem 7.5rem; }
+.onboarding-screen .bottom-action { background: linear-gradient(0deg, #fff 86%, #ffffff00); padding: 1rem 1.5rem max(2rem, env(safe-area-inset-bottom)); }
+.onboarding-screen .button { min-height: 3.5rem; border-radius: 1.75rem; font-size: .875rem; }
+.onboarding-screen .button span { display: none; }
+.onboarding-screen .button.dark { background: #062b49; }
+.onboarding-screen .button.dark:hover { background: #03233d; }
+.onboarding-screen button:focus-visible, .onboarding-screen select:focus-visible { outline-color: #6757e8; }
+
+.splash-screen { background: #062b49; color: #fff; padding-top: 0; }
+.device.on-welcome .status { color: #fff; }
+.device.on-welcome .home-indicator { background: #ffffff9c; }
+.splash-content { border: 0; background: transparent; color: inherit; width: 100%; height: 100%; padding: 4.3rem 1.5rem 1.7rem; display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden; }
+.splash-brand { position: relative; z-index: 1; flex: none; }
+.splash-brand strong { display: block; font-size: clamp(5rem, 25vw, 7.4rem); line-height: .9; letter-spacing: -.085em; font-weight: 800; }
+.splash-brand strong span { color: #c8ff00; }
+.splash-brand p { margin: .75rem 0 0; font-size: .72rem; font-weight: 800; letter-spacing: .12em; white-space: nowrap; }
+.splash-brand p span { color: #c8ff00; }
+.splash-art { position: relative; width: min(118%, 29rem); min-height: 0; flex: 1; display: grid; place-items: center; margin-top: 1rem; }
+.splash-art img { width: min(120%, 28rem); max-height: 100%; object-fit: contain; position: relative; z-index: 1; }
+.splash-art span { position: absolute; color: #c8ff00; font-size: 3rem; }
+.splash-art span:first-child { left: 1rem; top: 15%; }
+.splash-art span:last-child { right: 0; bottom: 15%; }
+.splash-note { position: relative; z-index: 1; align-self: flex-start; text-align: left; margin: -.7rem 0 1.2rem; font-family: cursive; font-style: italic; font-size: 1.35rem; line-height: 1.22; transform: rotate(-5deg); }
+.splash-loader { display: block; width: 5.5rem; height: .27rem; border-radius: 1rem; background: #ffffff59; flex: none; margin-bottom: .5rem; }
+.splash-loader:before { content: ''; display: block; width: 42%; height: 100%; background: white; border-radius: inherit; }
+
+.welcome-screen { background: #fff; color: #062b49; padding-top: 43px; }
+.welcome-screen ~ .home-indicator { background: #062b4970; }
+.welcome-screen .welcome-content { display: flex; flex-direction: column; overflow: hidden; padding-top: clamp(2rem, 6dvh, 3.5rem); padding-bottom: 0; }
+.welcome-content h1 { flex: none; margin-bottom: 1rem; }
+.welcome-content mark { background: #c8ff00; color: #062b49; padding-inline: .09em; border-radius: .12em .23em .1em .17em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.welcome-content .lead { flex: none; margin-bottom: .4rem; }
+.welcome-illustration { position: relative; flex: 1; min-height: 12rem; display: grid; place-items: center; margin-inline: -1.5rem; overflow: hidden; }
+.welcome-illustration img { position: absolute; bottom: -2.5rem; height: min(110%, 26rem); width: 100%; object-fit: contain; z-index: 1; }
+.welcome-scribble { position: absolute; color: #6757e8; font-size: 12rem; font-weight: 800; transform: rotate(-22deg); opacity: .65; top: 0; left: 9%; line-height: 1; }
+.welcome-annotation { position: absolute; right: 6%; top: 11%; font: italic 1rem/1.15 cursive; color: #062b49; transform: rotate(-9deg); z-index: 2; }
+.welcome-actions { flex: none; background: #062b49; padding: 1.1rem 1.5rem max(2rem, env(safe-area-inset-bottom)); display: grid; justify-items: center; gap: .9rem; }
+.welcome-cta { border: 0; border-radius: 2rem; width: 100%; min-height: 3.5rem; background: #c8ff00; color: #062b49; font-size: .9rem; font-weight: 800; transition: transform .2s, background .2s; }
+.welcome-cta:hover { background: #b9ed00; }
+.welcome-cta:active { transform: scale(.98); }
+.welcome-secondary { border: 0; background: none; color: #fff; text-decoration: underline; text-underline-offset: .2em; font-weight: 600; font-size: .8rem; min-height: 2rem; }
+
+.start-screen .lead { margin-bottom: 1.6rem; }
+.start-options { gap: .75rem; }
+.start-screen .choice { position: relative; min-height: 6.7rem; padding: 1rem 1.2rem; border: 1px solid #e6e9ed; border-radius: 1.2rem; box-shadow: 0 4px 14px #062b4909; justify-content: space-between; overflow: hidden; }
+.start-screen .choice.selected { border: 2px solid #c8ff00; background: #fff; padding: calc(1rem - 1px) calc(1.2rem - 1px); }
+.choice-copy { position: relative; z-index: 1; max-width: 67%; }
+.start-screen .choice strong { font-size: .94rem; color: #062b49; }
+.start-screen .choice small { font-size: .75rem; line-height: 1.4; color: #536274; margin-top: .38rem; }
+.choice-art { width: 4.5rem; height: 4.5rem; flex: none; border-radius: 50% 45% 38% 50%; display: grid; place-items: center; font-size: 2.7rem; font-weight: 800; color: #062b49; background: #eaf1fa; transform: rotate(-8deg); }
+.choice-art-ideas { background: #eeeafe; color: #6757e8; transform: rotate(9deg); }
+.choice-art-noidea { background: #eef4e2; color: #062b49; }
+.start-screen .text-label { font-size: .8rem; }
+.start-screen .field-select { display: block; width: 100%; min-height: 3rem; margin-top: .5rem; border: 1px solid #e6e9ed; border-radius: .8rem; background: #fff; color: #062b49; padding-inline: .8rem; }
+.start-screen .hint { font-size: .72rem; }
+
+.questions-screen .scroll { padding-top: .65rem; }
+.questions-screen .progress-meta { font-size: .8rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: #536274; margin-bottom: .75rem; }
+.questions-screen .progress-track { height: .48rem; background: #f0f2f4; margin-bottom: 2rem; }
+.questions-screen .progress-track span { background: #c8ff00; }
+.questions-screen h1 { font-size: clamp(1.95rem, 8.5vw, 2.5rem); margin-bottom: .65rem; }
+.questions-screen .lead { margin-bottom: 1.8rem; }
+.questions-screen .option-grid { gap: .55rem; }
+.questions-screen .option { min-height: 6.5rem; padding: .65rem .25rem; border: 1px solid #e6e9ed; border-radius: 1rem; font-size: .7rem; font-weight: 700; gap: .65rem; line-height: 1.2; transition: background .2s, border-color .2s, transform .2s; }
+.questions-screen .option.selected { background: #062b49; border: 2px solid #c8ff00; box-shadow: none; color: #fff; }
+.questions-screen .option:active, .start-screen .choice:active { transform: scale(.98); }
+.questions-screen .option-symbol { font-size: 1.7rem; color: #6757e8; }
+.questions-screen .option.selected .option-symbol { color: #c8ff00; }
+
+@media (max-height: 720px) {
+  .splash-content { padding-top: 3.2rem; }
+  .splash-brand strong { font-size: 5rem; }
+  .welcome-screen .welcome-content { padding-top: 1rem; }
+  .welcome-screen h1 { font-size: 2.1rem; }
+  .welcome-screen .lead { font-size: .78rem; }
+  .welcome-illustration { min-height: 8rem; }
+  .questions-screen .progress-track { margin-bottom: 1.1rem; }
+  .questions-screen .lead { margin-bottom: 1rem; }
+  .questions-screen .option { min-height: 5.6rem; }
+}

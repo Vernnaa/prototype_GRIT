@@ -4,7 +4,7 @@ import { KEY, loadState, reducer, type Reflection } from './state';
 import { Nav } from './components';
 import Layout from './Layout';
 import { currentRoute } from './router';
-import { WelcomePage, StartingPointPage, QuestionsPage, ExplorerProfilePage } from './pages/onboarding/page';
+import { SplashPage, WelcomePage, StartingPointPage, QuestionsPage, ExplorerProfilePage } from './pages/onboarding/page';
 import { ExplorePage, FieldDetailPage } from './pages/explore/page';
 import { MissionsPage, MissionDetailPage, MissionWorkspacePage } from './pages/missions/page';
 import { ReflectionPage, ExperienceInsightPage } from './pages/reflection/page';
@@ -15,6 +15,7 @@ import ProfilePage from './pages/profile/page';
 import './styles.css';
 import './styles/tokens.css';
 import './styles/layout.css';
+import './styles/onboarding.css';
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, undefined, loadState);
@@ -42,12 +43,13 @@ export default function App() {
   const mission = missions.find(m => m.id === id) || missions[0];
   const chosen = fields.find(f => f.id === state.direction);
   const activeMission = missions.find(m => !state.completedMissions.includes(m.id) && m.field === ranked[0].id) || missions.find(m => !state.completedMissions.includes(m.id)) || missions[0];
-  const showNav = !['welcome', 'start', 'questions', 'explorer', 'workspace', 'reflection', 'insight'].includes(page);
+  const showNav = !['splash', 'welcome', 'start', 'questions', 'explorer', 'workspace', 'reflection', 'insight'].includes(page);
   const props = { state, dispatch };
 
-  return <Layout welcome={page === 'welcome'}>
-    <div className={`screen ${page === 'welcome' ? 'welcome-screen' : ''}`} key={`${page}-${id || ''}`}>
-      {page === 'welcome' && <WelcomePage/>}
+  return <Layout welcome={page === 'splash'}>
+    <div className={`screen ${['splash', 'welcome', 'start', 'questions'].includes(page) ? `onboarding-screen ${page}-screen` : ''}`} key={`${page}-${id || ''}`}>
+      {page === 'splash' && <SplashPage/>}
+      {page === 'welcome' && <WelcomePage dispatch={dispatch}/>}
       {page === 'start' && <StartingPointPage {...props} error={error} setError={setError}/>}
       {page === 'questions' && <QuestionsPage {...props} error={error} setError={setError}/>}
       {page === 'explorer' && <ExplorerProfilePage state={state}/>}
@@ -64,7 +66,6 @@ export default function App() {
       {page === 'progress' && <ProgressPage state={state} chosen={chosen}/>}
       {page === 'profile' && <ProfilePage state={state} dispatch={dispatch}/>}
     </div>
-    {showNav && <Nav page={page === 'welcome' || page === 'start' || page === 'questions' || page === 'explorer' ? 'home' : page}/>}
-    <div className="home-indicator" aria-hidden="true"/>
+    {showNav && <Nav page={page === 'splash' || page === 'welcome' || page === 'start' || page === 'questions' || page === 'explorer' ? 'home' : page}/>}
   </Layout>;
 }

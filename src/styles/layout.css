@@ -1,20 +1,28 @@
 .stage {
   min-height: 100dvh;
-  padding: 0;
+  padding: 16px;
   gap: 0;
-  background: var(--paper);
+  background: #e9edf0;
 }
 
 .device {
-  width: min(430px, calc(100vw - 32px), calc(100dvh * 0.55));
-  height: min(860px, calc(100dvh - 32px));
+  width: min(410px, calc(100vw - 32px), calc((100dvh - 32px) * .52));
+  height: min(844px, calc(100dvh - 32px));
+  border: 7px solid #0a2137;
+  border-radius: 3rem;
+  box-shadow: 0 25px 70px #062b4930, 0 0 0 1px #062b4920;
+}
+
+.device::before {
+  background: #0a2137;
 }
 
 .desktop-caption {
   display: none;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
+  .stage { padding: 0; }
   .device {
     width: 100vw;
     height: 100dvh;

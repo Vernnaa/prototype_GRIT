@@ -1,5 +1,7 @@
 # GRIT prototype
 
+The active GRIT mobile app uses React, Vite, TypeScript and Tailwind v4. Entry: `src/main.tsx` → `src/FreshApp.tsx`. It uses the local artwork under `references/` and saves new prototype progress in this browser as `grit-fresh-v1`. GRIT Coach is a guided local prototype, not a live AI service. Legacy app files remain in the repo but are not imported by the active entry.
+
 React + Vite + TypeScript mobile prototype. Journey: Explore → Experience → Reflect → Decide → Progress. Choices, mission checklist, reflection and path save locally in the current browser. UI lives in TSX components; `index.html` is Vite's document shell only.
 
 ```sh
