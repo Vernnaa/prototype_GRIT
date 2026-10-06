@@ -24,6 +24,7 @@ export function Direction({
   chooseField,
   build,
   explore,
+  discover,
   mission,
   reflection,
   back,
@@ -35,6 +36,7 @@ export function Direction({
   chooseField: (id: string) => void;
   build: () => void;
   explore: () => void;
+  discover: () => void;
   mission?: Mission;
   reflection?: Reflection;
   back?: () => void;
@@ -44,19 +46,19 @@ export function Direction({
       ? ['marketing', 'entrepreneurship', 'consulting'].map(id => fields.find(field => field.id === id)!)
       : ranked.slice(0, 3);
     const descriptions: Record<string, string> = {
-      marketing: 'Creative problem solving and communication may be worth exploring.',
-      entrepreneurship: 'Explore building ideas and creating value.',
-      consulting: 'Try analyzing challenges and finding solutions.',
+      marketing: 'You enjoyed creative problem solving and communication.',
+      entrepreneurship: 'You like building ideas and creating value.',
+      consulting: 'You enjoy analyzing and finding solutions.',
     };
     return <section className="mission-flow mission-direction" aria-label="Your Direction">
       <button type="button" className="mission-back" aria-label="Go back" onClick={back}><ArrowLeft size={23} /></button>
-      <h1 className="mt-3 text-[28px] leading-[1.05] font-extrabold tracking-[-.04em]">
-        {reflection.feeling === 'Not for me' ? 'Knowing what feels right is progress, too.' : <>You seem to enjoy<br />{reflection.enjoyed.replace(/[.!?]+$/, '')}.</>}
+      <h1 className="mt-3 line-clamp-4 text-[28px] leading-[1.05] font-extrabold tracking-[-.04em] break-words">
+        {reflection.feeling === 'Not for me' ? 'Knowing what feels right is progress, too.' : mission.id === 'campaign' ? <>You seem to enjoy<br />planning, presenting,<br />and solving problems.</> : <>You seem to enjoy<br />{reflection.enjoyed.replace(/[.!?]+$/, '')}.</>}
       </h1>
-      <p className="mt-3 text-[14px] text-grit-muted">That may be a sign worth exploring.</p>
-      <div className="mt-6 space-y-3">
+      <p className="mt-2 text-[14px] text-[#5B6980]">That may be a sign worth exploring.</p>
+      <div className="mt-4 space-y-3">
         {directions.map((field, i) => <button type="button" key={field.id} onClick={() => chooseField(field.id)} className="mission-direction-card">
-          <svg viewBox="0 0 64 64" className="h-14 w-14 shrink-0" aria-hidden="true">
+          <svg viewBox="0 0 64 64" className="h-[50px] w-[50px] shrink-0" aria-hidden="true">
             <circle cx="32" cy="32" r="32" fill={['#EAE7FF', '#EEF5FA', '#EAE7FF'][i]} />
             <path d="M9 64v-8c0-12 10-19 23-19s23 7 23 19v8Z" fill={['#6557F5', '#062B49', '#6557F5'][i]} />
             <path d="M26 34h12v10l-6 5-6-5Z" fill="#BD825F" />
@@ -67,15 +69,15 @@ export function Direction({
           </svg>
           <span className="min-w-0 flex-1">
             <strong className="block text-[15px] font-extrabold">{field.name}</strong>
-            <span className="mt-1 block text-[11px] leading-[1.35] text-grit-muted">{descriptions[field.id] || field.summary}</span>
-            <span className="mt-2 inline-block rounded-full bg-grit-lime px-2.5 py-1 text-[10px] font-bold">Worth exploring</span>
+            <span className="mt-1 block text-[11px] leading-[1.35] text-[#5B6980]">{descriptions[field.id] || field.summary}</span>
+            <span className="mt-2 inline-block rounded-full bg-grit-lime px-2.5 py-1 text-[12px] font-bold" aria-label={mission.id === 'campaign' ? `${[89, 76, 72][i]}% match, reference prototype value` : undefined}>{mission.id === 'campaign' ? `${[89, 76, 72][i]}% match` : 'Worth exploring'}</span>
           </span>
           <ArrowRight size={20} className="shrink-0" aria-hidden="true" />
         </button>)}
       </div>
-      <div className="mt-6 space-y-2">
-        <Button className="!bg-grit-lime !text-grit-navy" onClick={explore}>Explore These Directions</Button>
-        <Button variant="outline" className="!border-grit-navy !text-grit-navy" onClick={explore}>Keep Exploring</Button>
+      <div className="mission-direction-actions space-y-2">
+        <Button className="!bg-grit-lime !text-grit-navy" onClick={discover}>Explore These Directions</Button>
+        <Button variant="outline" className="!border-grit-navy !bg-white !text-grit-navy" onClick={explore}>Keep Exploring</Button>
       </div>
     </section>;
   }

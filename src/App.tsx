@@ -385,7 +385,6 @@ export default function App() {
           top={top}
           headline={headline}
           sections={sections}
-          bottom={bottom}
           onStart={() => { setMissionFlow(true); go('workspace'); }}
         />
       );
@@ -451,6 +450,7 @@ export default function App() {
           }}
           explore={() => go('explore')}
           mission={missionFlow ? mission : undefined}
+          discover={() => go('discover')}
           reflection={missionFlow ? reflection : undefined}
           back={back}
         />

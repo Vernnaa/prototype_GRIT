@@ -36,13 +36,13 @@ export function MissionWorkspace({
       <h1 className="mt-3 text-[28px] font-extrabold leading-[1.05] tracking-[-.04em]">
         {mission.id === 'campaign' ? <>Create a Marketing<br />Campaign</> : mission.title}
       </h1>
-      <p className="mt-3 text-[13px] text-navy/65">
+      <p className="mt-2 text-[15px] text-[#5B6980]">
         {steps.length} / {mission.steps.length} Steps completed
       </p>
       <div className="mission-progress" role="progressbar" aria-label="Mission progress" aria-valuemin={0} aria-valuemax={mission.steps.length} aria-valuenow={steps.length}>
         <div style={{ width: `${steps.length / mission.steps.length * 100}%` }} />
       </div>
-      <div className="space-y-3">
+      <div className="space-y-2">
         {mission.steps.map((s, i) => (
           <button
             key={s}
@@ -136,9 +136,9 @@ export function MissionReflection({
     <div className="mission-flow mission-reflection">
       {top('')}
       <h1 className="mt-3 text-[30px] font-extrabold leading-[1.05] tracking-[-.04em]">How did that feel?</h1>
-      <p className="mt-3 mb-6 text-[14px] leading-[1.35] text-grit-muted">Your experience matters. Let's reflect<br />on what you just did.</p>
-      <h2 className="mb-3 text-sm font-extrabold">Did you enjoy this?</h2>
-      <div className="mb-6 grid grid-cols-4 gap-2">
+      <p className="mt-2 mb-5 text-[14px] leading-[1.35] text-[#5B6980]">Your experience matters. Let's reflect<br />on what you just did.</p>
+      <h2 className="mb-2 text-[14px] font-extrabold">Did you enjoy this?</h2>
+      <div className="mb-5 grid grid-cols-4 gap-2">
         {['Loved it', 'Liked it', 'It was okay', 'Not for me'].map((x, i) => {
           const Face = [SmileyWink, Smiley, SmileyMeh, SmileySad][i];
           return (
@@ -154,7 +154,7 @@ export function MissionReflection({
           </button>
         );})}
       </div>
-      <label className="block text-[13px] font-extrabold">
+      <label className="block text-[14px] font-extrabold">
         What did you enjoy most?
         <textarea
           value={enjoyed}
@@ -163,7 +163,7 @@ export function MissionReflection({
           className="mt-2 h-20 w-full resize-none rounded-xl border border-navy/10 bg-white p-3 text-xs font-medium"
         />
       </label>
-      <label className="mt-5 block text-[13px] font-extrabold">
+      <label className="mt-5 block text-[14px] font-extrabold">
         What felt challenging?
         <textarea
           value={challenge}
@@ -173,7 +173,7 @@ export function MissionReflection({
         />
       </label>
       <div className="mt-5">
-        <h2 className="mb-3 text-[13px] font-extrabold">Would you like to try something similar?</h2>
+        <h2 className="mb-2 text-[14px] font-extrabold">Would you like to try something similar?</h2>
         <div className="grid grid-cols-2 gap-2">
           {['Yes', 'Not sure yet'].map((x) => (
             <button type="button" key={x} aria-pressed={again === x} onClick={() => { setAgain(x); setError(''); }} className="similar-option">
@@ -255,7 +255,6 @@ export function MissionDetail({
   top,
   headline,
   sections,
-  bottom,
   onStart,
 }: {
   mission: Mission;
@@ -263,7 +262,6 @@ export function MissionDetail({
   top: (title: string) => ReactNode;
   headline: (text: string, sub: string) => ReactNode;
   sections: (items: string[]) => ReactNode;
-  bottom: (content: ReactNode) => ReactNode;
   onStart: () => void;
 }) {
   return (
@@ -297,14 +295,14 @@ export function MissionDetail({
         <Label>SKILLS YOU’LL EXPLORE</Label>
         {sections(mission.skills)}
       </div>
-      {bottom(
+      <div className="mt-6 pb-[max(20px,env(safe-area-inset-bottom))]">
         <Button onClick={onStart}>
           {profile.completed.includes(mission.id)
             ? 'View Mission'
             : 'Start Mission'}{' '}
           <ArrowRight size={17} />
-        </Button>,
-      )}
+        </Button>
+      </div>
     </div>
   );
 }
