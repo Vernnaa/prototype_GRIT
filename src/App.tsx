@@ -20,7 +20,8 @@ import {
   Insight,
 } from './pages/missions/screens';
 import { ProfileDialog } from './components/ProfileDialog';
-import { Explore, FieldDetail, Compare } from './pages/explore/screens';
+import { Compare } from './pages/explore/screens';
+import { Explore, DiscoverPossibilities, CareerDetail, TryMission } from './pages/explore/journey';
 import { ParentView } from './pages/parent/screens';
 import { ProfilePage } from './pages/profile/screens';
 import { ProgressPage } from './pages/progress/screens';
@@ -61,6 +62,7 @@ export default function App() {
   ]);
   const [previous, setPrevious] = useState<Screen>('explore');
   const [missionFlow, setMissionFlow] = useState(false);
+  const [exploreMission, setExploreMission] = useState(false);
   const [modal, setModal] = useState('');
   const [tab, setTab] = useState<'progress' | 'achievements'>('progress');
   const [started, setStarted] = useState(false);
@@ -110,6 +112,7 @@ export default function App() {
     go('field');
   };
   const chooseMission = (id: string) => {
+    setExploreMission(screen === 'field');
     const savedReflection = profile.reflections.find(r => r.mission === id);
     setFeeling(savedReflection?.feeling || '');
     setEnjoyed(savedReflection?.enjoyed || '');
@@ -331,24 +334,21 @@ export default function App() {
     case 'explore': {
       body = (
         <Explore
-          filter={filter}
-          setFilter={setFilter}
-          search={search}
-          setSearch={setSearch}
-          fieldCard={fieldCard}
-          headline={headline}
-          onCompare={() => go('compare')}
+          profile={profile}
+          discover={() => go('discover')}
         />
       );
       break;
     }
+    case 'discover':
+      body = <DiscoverPossibilities profile={profile} filter={filter} setFilter={setFilter} search={search} setSearch={setSearch} chooseField={chooseField} back={() => go('explore')} />;
+      break;
     case 'field':
       body = (
-        <FieldDetail
+        <CareerDetail
           field={field}
           profile={profile}
-          top={top}
-          sections={sections}
+          back={() => go('discover')}
           update={update}
           chooseMission={chooseMission}
         />
@@ -378,7 +378,7 @@ export default function App() {
       );
       break;
     case 'mission':
-      body = (
+      body = exploreMission ? <TryMission mission={mission} field={field} profile={profile} update={update} back={() => go('field')} start={() => { setMissionFlow(true); go('workspace'); }} /> : (
         <MissionDetail
           mission={mission}
           profile={profile}
@@ -560,6 +560,7 @@ export default function App() {
   }
   return (
     <AppShell
+      exploreFlow={['explore', 'discover', 'field'].includes(screen) || (screen === 'mission' && exploreMission)}
       missionFlow={missionFlow}
       screen={screen}
       go={go}

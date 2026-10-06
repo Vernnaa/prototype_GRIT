@@ -9,6 +9,7 @@ export type Screen =
   | 'quiz'
   | 'explorer'
   | 'explore'
+  | 'discover'
   | 'field'
   | 'compare'
   | 'missions'
@@ -35,12 +36,14 @@ export function AppShell({
   children,
   modal,
   missionFlow = false,
+  exploreFlow = false,
 }: {
   screen: Screen;
   go: (screen: Screen) => void;
   children: ReactNode;
   modal: ReactNode;
   missionFlow?: boolean;
+  exploreFlow?: boolean;
 }) {
   const navVisible = ![
     'splash',
@@ -56,13 +59,13 @@ export function AppShell({
       <main className="app-shell" aria-label="GRIT app">
         <div
           key={screen}
-          className={`screen-enter screen-scroll min-h-0 flex-1 ${navVisible ? 'screen-with-nav' : ''} ${isHome ? 'home-screen' : ''} ${screen === 'path' ? 'bg-white !pb-0' : ''} ${missionFlow ? 'bg-[#F5F7F9] !pb-0' : ''} ${screen === 'coach' ? 'coach-screen' : ''}`}
+          className={`screen-enter screen-scroll min-h-0 flex-1 ${navVisible ? 'screen-with-nav' : ''} ${isHome ? 'home-screen' : ''} ${screen === 'path' || exploreFlow ? 'bg-white !pb-0' : ''} ${missionFlow ? 'bg-[#F5F7F9] !pb-0' : ''} ${screen === 'coach' ? 'coach-screen' : ''}`}
         >
           {children}
         </div>
         {navVisible && (
           <>
-            {screen !== 'coach' && !isHome && !missionFlow && (
+            {screen !== 'coach' && !isHome && !missionFlow && !exploreFlow && (
               <button
                 type="button"
                 aria-label="Open GRIT Coach"
@@ -72,7 +75,7 @@ export function AppShell({
                 <Sparkle size={24} />
               </button>
             )}
-            <BottomNavigation screen={missionFlow ? 'workspace' : screen} go={go} />
+            <BottomNavigation screen={missionFlow ? 'workspace' : exploreFlow ? 'explore' : screen} go={go} />
           </>
         )}
         {modal}

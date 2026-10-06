@@ -13,7 +13,7 @@ const items = [
     id: 'explore',
     label: 'Explore',
     Icon: Compass,
-    screens: ['explorer', 'explore', 'field', 'compare'],
+    screens: ['explorer', 'explore', 'discover', 'field', 'compare'],
   },
   {
     id: 'missions',
