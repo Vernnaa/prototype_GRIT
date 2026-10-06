@@ -24,7 +24,6 @@ export type Screen =
   | 'achievements'
   | 'coach'
   | 'roadmap'
-  | 'interests'
   | 'noidea'
   | 'parent'
   | 'profile'
@@ -51,7 +50,6 @@ export function AppShell({
     'start',
     'quiz',
     'noidea',
-    'interests',
   ].includes(screen);
   const isHome = screen === 'home';
   return (

@@ -1,4 +1,5 @@
-export const questions = [
+export type Question = { title: string; group: string; choices: string[]; instruction?: string; maxSelections?: number };
+export const questions: Question[] = [
   { title: 'What activities do you enjoy the most?', group: 'Interests', choices: ['Creating', 'Solving problems', 'Helping people', 'Leading', 'Analyzing', 'Building', 'Communicating', 'Organizing', 'Exploring'] },
   { title: 'What comes naturally to you?', group: 'Strengths', choices: ['Problem solving', 'Communication', 'Leadership', 'Creativity', 'Research', 'Planning', 'Empathy', 'Technology', 'Teaching'] },
   { title: 'What matters most to you?', group: 'Values', choices: ['Impact', 'Growth', 'Independence', 'Stability', 'Community', 'Curiosity', 'Creativity', 'Freedom', 'Collaboration'] },

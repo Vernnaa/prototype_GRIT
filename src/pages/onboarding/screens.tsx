@@ -1,18 +1,9 @@
 import {
   ArrowLeft,
   ArrowRight,
-  CalendarBlank,
-  ChartBar,
-  ChatCircleDots,
   Compass,
-  Cube,
-  Heart,
   Lightbulb,
-  Palette,
-  PaperPlaneTilt,
   Rocket,
-  Sparkle,
-  UsersThree,
 } from '@phosphor-icons/react';
 import { fields, questions } from '../../content';
 import type { Profile } from '../../model';
@@ -20,11 +11,11 @@ import {
   Button,
   Card,
   Icon,
-  Label,
   Logo,
   Mascot,
 } from '../../components/AppUI';
 import type { ReactNode } from 'react';
+import { ExploreQuestionPage, questionOptions } from './ExploreQuestionPage';
 
 export function Splash({ onContinue }: { onContinue: () => void }) {
   return (
@@ -131,7 +122,7 @@ export function StartingPoint({
   setError: (message: string) => void;
   back: () => void;
   bottom: (content: ReactNode) => ReactNode;
-  go: (screen: 'noidea' | 'interests' | 'quiz') => void;
+   go: (screen: 'noidea' | 'quiz') => void;
 }) {
   const choices = [
     {
@@ -240,9 +231,7 @@ export function StartingPoint({
             go(
               profile.start === 'none'
                 ? 'noidea'
-                : profile.start === 'ideas'
-                  ? 'interests'
-                  : 'quiz',
+                : 'quiz',
             );
           }}
         >
@@ -256,144 +245,32 @@ export function StartingPoint({
 export function Quiz({
   profile,
   q,
-  setQ,
   setProfile,
   setError,
   onBack,
-  bottom,
   onComplete,
+  error,
 }: {
   profile: Profile;
   q: number;
-  setQ: (value: number) => void;
   setProfile: (update: (profile: Profile) => Profile) => void;
   setError: (value: string) => void;
   onBack: () => void;
-  bottom: (content: ReactNode) => ReactNode;
   onComplete: () => void;
+  error: string;
 }) {
   const item = questions[q],
     choices = profile.answers[q];
-  const activityIcons = [
-    Palette,
-    Lightbulb,
-    Heart,
-    UsersThree,
-    ChartBar,
-    Cube,
-    ChatCircleDots,
-    CalendarBlank,
-    PaperPlaneTilt,
-  ];
-  return (
-    <div className="onboarding-quiz relative h-full bg-white px-5 pt-4">
-      <div className="flex items-center justify-between text-[13px] font-semibold text-navy/70">
-        <span>
-          Question {q + 1} of {questions.length}
-        </span>
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-lg px-2 py-1 text-xs font-bold text-purple"
-        >
-          Back
-        </button>
-      </div>
-      <div
-        className="onboarding-quiz-progress mt-4 h-3 overflow-hidden rounded-full bg-navy/10"
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={questions.length}
-        aria-valuenow={q + 1}
-        aria-label="Quiz progress"
-      >
-        <div
-          className="h-full rounded-full bg-lime"
-          style={{ width: `${((q + 1) / questions.length) * 100}%` }}
-        />
-      </div>
-      <div className="mb-7 mt-7">
-        <h1 className="text-[clamp(26px,8vw,32px)] font-extrabold leading-[1.1] tracking-[-.06em]">
-          {item.title}
-        </h1>
-        <p className="mt-3 text-[14px] text-navy/70">Select up to 3 options</p>
-      </div>
-      <div className="grid grid-cols-3 gap-2.5">
-        {item.choices.map((x, i) => {
-          const ActivityIcon = activityIcons[i];
-          return (
-            <button
-              type="button"
-              aria-pressed={choices.includes(x)}
-              onClick={() => {
-                setError('');
-                const next = choices.includes(x)
-                  ? choices.filter((c) => c !== x)
-                  : choices.length < 3
-                    ? [...choices, x]
-                    : choices;
-                if (choices.length === 3 && !choices.includes(x)) {
-                  setError('Choose up to 3 options.');
-                  return;
-                }
-                setProfile((p) => ({
-                  ...p,
-                  answers: p.answers.map((v, j) => (j === q ? next : v)),
-                }));
-              }}
-              key={x}
-              className={`flex min-h-[112px] flex-col items-center justify-center gap-2 rounded-[18px] border-2 p-2 text-center text-[12px] font-semibold leading-tight ${choices.includes(x) ? 'border-lime bg-navy text-white' : 'border-navy/8 bg-white text-navy'}`}
-            >
-              {q === 0 ? (
-                <ActivityIcon
-                  size={32}
-                  weight="duotone"
-                  className={choices.includes(x) ? 'text-lime' : 'text-purple'}
-                />
-              ) : (
-                <Icon
-                  name={
-                    [
-                      'pen',
-                      'lightbulb',
-                      'heart',
-                      'users',
-                      'chart',
-                      'code',
-                      'chat',
-                      'book',
-                      'paperPlane',
-                    ][i]
-                  }
-                  size={32}
-                  className={choices.includes(x) ? 'text-lime' : 'text-purple'}
-                />
-              )}
-              {x}
-            </button>
-          );
-        })}
-      </div>
-      {bottom(
-        <Button
-          variant="navy"
-          className="!rounded-full !text-[16px]"
-          onClick={() => {
-            if (!choices.length) {
-              setError('Pick at least one option.');
-              return;
-            }
-            if (q < questions.length - 1) {
-              setQ(q + 1);
-              setError('');
-            } else onComplete();
-          }}
-        >
-          {q === questions.length - 1 ? 'See My Explorer Profile' : 'Next'}
-        </Button>,
-      )}
-    </div>
-  );
+  const limit = item.maxSelections ?? 3;
+  return <ExploreQuestionPage currentQuestion={q + 1} totalQuestions={questions.length} title={item.title} instruction={item.instruction ?? `Select up to ${limit} options`} options={questionOptions(item.choices)} maxSelections={limit} selectedValues={choices} error={error} onBack={onBack} onSelectionChange={next => {
+    if (next.length > limit) { setError(`Choose up to ${limit} options.`); return; }
+    setError('');
+    setProfile(p => ({ ...p, answers: p.answers.map((values, index) => index === q ? next : values) }));
+  }} onNext={() => {
+    if (!choices.length) { setError('Pick at least one option.'); return; }
+    setError('');
+    onComplete();
+  }} />;
 }
 
 export function NoIdea({
@@ -435,63 +312,6 @@ export function NoIdea({
       {bottom(
         <Button onClick={onContinue}>
           Start My First Exploration <ArrowRight size={17} />
-        </Button>,
-      )}
-    </div>
-  );
-}
-
-export function Interests({
-  top,
-  headline,
-  sections,
-  bottom,
-  onContinue,
-}: {
-  top: () => ReactNode;
-  headline: (title: string, sub: string) => ReactNode;
-  sections: (items: string[]) => ReactNode;
-  bottom: (content: ReactNode) => ReactNode;
-  onContinue: () => void;
-}) {
-  return (
-    <div className="relative h-full bg-white px-5 pt-3">
-      {top()}
-      {headline(
-        'You don’t have to choose just yet.',
-        'Your interests might connect in ways you haven’t tried yet.',
-      )}
-      <div className="relative mb-6 flex h-52 items-center justify-center">
-        <div className="absolute left-3 top-8 flex h-32 w-32 items-center justify-center rounded-full bg-lime/75 text-sm font-extrabold">
-          Business
-        </div>
-        <div className="absolute right-3 top-8 flex h-32 w-32 items-center justify-center rounded-full bg-purple/75 text-sm font-extrabold text-white">
-          Creative
-        </div>
-        <div className="absolute bottom-0 flex h-32 w-32 items-center justify-center rounded-full bg-navy/85 text-sm font-extrabold text-white">
-          Technology
-        </div>
-      </div>
-      <Card className="mb-4 !bg-navy text-white">
-        <Sparkle size={22} className="text-lime" />
-        <h2 className="mt-2 text-lg font-extrabold">
-          The interesting stuff happens in between.
-        </h2>
-        <p className="mt-2 text-xs text-white/75">
-          Business + Technology could lead you to product management,
-          entrepreneurship, or product marketing.
-        </p>
-      </Card>
-      <Label>Directions to explore</Label>
-      {sections([
-        'Product Management',
-        'Entrepreneurship',
-        'Product Marketing',
-        'Business Analytics',
-      ])}
-      {bottom(
-        <Button onClick={onContinue}>
-          Explore Combinations <ArrowRight size={17} />
         </Button>,
       )}
     </div>

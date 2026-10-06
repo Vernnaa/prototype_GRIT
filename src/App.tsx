@@ -8,7 +8,6 @@ import {
   StartingPoint,
   Quiz,
   NoIdea,
-  Interests,
   ExplorerProfile,
 } from './pages/onboarding/screens';
 import { AppShell, type Screen } from './components/AppShell';
@@ -91,7 +90,15 @@ export default function App() {
     setModal('');
     setScreen(next);
   };
-  const back = () => go(missionFlow && screen === 'direction' ? 'reflection' : screen === 'reflection' ? 'workspace' : screen === 'workspace' ? 'mission' : previous === 'splash' ? 'home' : previous);
+  const back = () => {
+    setError('');
+    if (screen === 'quiz') {
+      if (q > 0) setQ(q - 1);
+      else go(profile.start === 'none' ? 'noidea' : 'start');
+      return;
+    }
+    go(screen === 'start' ? 'welcome' : screen === 'noidea' ? 'start' : missionFlow && screen === 'direction' ? 'reflection' : screen === 'reflection' ? 'workspace' : screen === 'workspace' ? 'mission' : previous === 'splash' ? 'home' : previous);
+  };
   const update = (part: Partial<Profile>) =>
     setProfile((p) => ({ ...p, ...part }));
   const ranked = rankFields(profile.answers, profile.dream);
@@ -184,9 +191,9 @@ export default function App() {
         type="button"
         aria-label="Go back"
         onClick={() => (screen === 'quiz' && q > 0 ? setQ(q - 1) : back())}
-        className={`flex items-center justify-center ${missionFlow ? 'h-11 w-11 text-grit-navy' : 'h-10 w-10 rounded-xl bg-white'}`}
+        className={`flex items-center justify-center ${screen === 'noidea' ? 'h-11 w-11 text-white' : missionFlow ? 'h-11 w-11 text-grit-navy' : 'h-10 w-10 rounded-xl bg-white'}`}
       >
-        <ArrowLeft size={missionFlow ? 23 : 19} />
+        <ArrowLeft size={screen === 'noidea' ? 24 : missionFlow ? 23 : 19} />
       </button>
       <span className="text-xs font-extrabold">{name || ''}</span>
     </div>
@@ -270,7 +277,7 @@ export default function App() {
           setError={setError}
           back={back}
           bottom={bottom}
-          go={go}
+           go={next => { if (next === 'quiz') setQ(0); go(next); }}
         />
       );
       break;
@@ -286,30 +293,15 @@ export default function App() {
         />
       );
       break;
-    case 'interests':
-      body = (
-        <Interests
-          top={top}
-          headline={headline}
-          sections={sections}
-          bottom={bottom}
-          onContinue={() => {
-            setQ(0);
-            go('quiz');
-          }}
-        />
-      );
-      break;
     case 'quiz': {
       body = (
         <Quiz
+          error={error}
           profile={profile}
           q={q}
-          setQ={setQ}
           setProfile={setProfile}
           setError={setError}
-          onBack={() => (q > 0 ? setQ(q - 1) : back())}
-          bottom={bottom}
+          onBack={back}
           onComplete={() => go('explorer')}
         />
       );
