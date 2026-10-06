@@ -452,9 +452,6 @@ export default function App() {
       body = (
         <MyPath
           profile={profile}
-          mission={mission}
-          headline={headline}
-          go={go}
         />
       );
       break;

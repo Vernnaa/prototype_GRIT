@@ -1,17 +1,19 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   ArrowRight,
   ArrowUpRight,
   BookOpen,
   CaretRight,
-  Check,
   Compass,
-  PencilSimple,
+  ClipboardText,
+  Flame,
+  SquaresFour,
+  User,
 } from '@phosphor-icons/react';
-import { fields, missions, type Field, type Mission } from '../../content';
-import type { Profile } from '../../model';
+import { missions, type Field, type Mission } from '../../content';
+import { level, levelNames, type Profile } from '../../model';
+import { Achievements } from '../progress/Achievements';
 import { Button, Card, Icon, Label } from '../../components/AppUI';
-import type { Screen } from '../../components/AppShell';
 
 export function Direction({
   profile,
@@ -57,7 +59,9 @@ export function Direction({
               <p className="text-[11px] text-navy/55">
                 Why it might fit: {f.tags.slice(0, 2).join(' + ')}
               </p>
-              <span className="mt-2 inline-block rounded-full bg-lime px-2 py-0.5 text-[10px] font-bold">Direction {i + 1} to explore</span>
+              <span className="mt-2 inline-block rounded-full bg-lime px-2 py-0.5 text-[10px] font-bold">
+                Direction {i + 1} to explore
+              </span>
             </div>
             <button
               onClick={() => chooseField(f.id)}
@@ -79,96 +83,267 @@ export function Direction({
         </Card>
       ))}
       <Button onClick={build}>Build My Path</Button>
-      <Button variant="outline" className="mt-2" onClick={explore}>Keep Exploring</Button>
+      <Button variant="outline" className="mt-2" onClick={explore}>
+        Keep Exploring
+      </Button>
     </div>
   );
 }
 
-export function MyPath({
-  profile,
-  mission,
-  headline,
-  go,
+function AchievementBadge({
+  kind,
 }: {
-  profile: Profile;
-  mission: Mission;
-  headline: (title: string, sub: string) => ReactNode;
-  go: (screen: Screen) => void;
+  kind: 'mission' | 'fields' | 'curious';
 }) {
-  const chosen = fields.find((f) => f.id === profile.direction);
-  const nodes = [
-    [
-      'EXPLORE',
-      'Discover your interests',
-      profile.answers[0].length > 0,
-      'explore',
-    ],
-    [
-      'EXPERIENCE',
-      `Complete ${mission.title.toLowerCase()}`,
-      profile.completed.length > 0,
-      'missions',
-    ],
-    [
-      'REFLECT',
-      'Identify what you enjoyed',
-      profile.reflections.length > 0,
-      'direction',
-    ],
-    [
-      'BUILD',
-      `Develop ${chosen?.name || 'your'} fundamentals`,
-      profile.milestones.includes('build'),
-      'recommend',
-    ],
-    [
-      'EXPERIENCE',
-      'Try another challenge',
-      profile.completed.length > 1,
-      'missions',
-    ],
-    [
-      'PROGRESS',
-      'Build your first portfolio project',
-      profile.milestones.includes('portfolio'),
-      'recommend',
-    ],
-  ] as const;
   return (
-    <div className="bg-white px-5 pt-5">
-      {headline('Your Path', 'Your path can change as you grow.')}
-      <button className="mb-3 self-end rounded-full bg-paper px-4 py-2 text-xs font-bold" onClick={() => go('direction')}><PencilSimple size={16} className="inline" /> Edit direction</button>
-      <div className="mt-4">
-        {nodes.map(([name, desc, done, target], i) => (
+    <svg viewBox="0 0 64 64" className="mx-auto h-14 w-14" aria-hidden="true">
+      <path d="M32 3 58 18v29L32 62 6 47V18Z" fill="#6557F5" />
+      {kind === 'curious' ? (
+        <>
+          <path d="M32 5 55 18v25L32 56 9 43V18Z" fill="#C8FF00" />
+          <path
+            d="M27 18c-9 0-13 11-6 16-2 7 3 11 9 10v5h5v-5c7 0 11-6 8-11 6-6 1-15-6-15l-5 5Z"
+            fill="#062B49"
+          />
+          <path d="M32 23v20" stroke="#6557F5" strokeWidth="3" />
+        </>
+      ) : (
+        <>
+          <path d="m32 9 20 12-20 12L12 21Z" fill="#03233D" />
+          <path d="M12 21 32 33v23L12 44Z" fill="#062B49" />
+          <path d="M32 33 52 21v23L32 56Z" fill="#071D3B" />
+          {kind === 'mission' ? (
+            <>
+              <path d="m14 25 12 7v17l-12-7Z" fill="#9A8DFF" />
+              <path
+                d="M32 34v19M12 21 32 33"
+                stroke="#C8FF00"
+                strokeWidth="2"
+              />
+              <path
+                d="M33 27V8l12 5-12 6"
+                fill="#C8FF00"
+                stroke="#062B49"
+                strokeWidth="3"
+                strokeLinejoin="round"
+              />
+            </>
+          ) : (
+            <>
+              <path
+                d="m19 26 13 7 13-7v14l-13 7-13-7ZM32 33v14M19 33l13 7 13-7"
+                fill="none"
+                stroke="#C8FF00"
+                strokeWidth="2"
+                strokeLinejoin="round"
+              />
+            </>
+          )}
+        </>
+      )}
+    </svg>
+  );
+}
+
+export function MyPath({ profile }: { profile: Profile }) {
+  const [tab, setTab] = useState<'progress' | 'achievements'>('progress');
+  const currentLevel = level(profile.xp);
+  const xpRequired = currentLevel * 250;
+  const percentage = Math.max(
+    0,
+    Math.min(100, (profile.xp / xpRequired) * 100),
+  );
+  const stats = [
+    { value: profile.streak, label: 'Day Streak', Icon: Flame },
+    { value: profile.completed.length, label: 'Missions', Icon: ClipboardText },
+    { value: profile.explored.length, label: 'Fields', Icon: SquaresFour },
+    {
+      value: new Set(
+        profile.completed.flatMap(
+          (id) => missions.find((m) => m.id === id)?.skills || [],
+        ),
+      ).size,
+      label: 'Skills',
+      Icon: User,
+    },
+  ];
+  const achievements = [
+    {
+      kind: 'mission',
+      title: 'First Mission',
+      description: 'Completed your first mission',
+      unlocked: profile.completed.length > 0,
+    },
+    {
+      kind: 'fields',
+      title: '3 Fields Explored',
+      description: 'Explored three different fields',
+      unlocked: profile.explored.length >= 3,
+    },
+    // ponytail: question count is not persisted; unlock once coach question tracking exists.
+    {
+      kind: 'curious',
+      title: 'Curious Explorer',
+      description: 'Asked 10+ thoughtful questions',
+      unlocked: false,
+    },
+  ] as const;
+
+  return (
+    <section
+      aria-label="My Path"
+      className="min-h-full bg-white px-5 pt-[max(24px,env(safe-area-inset-top))] pb-20 text-grit-text max-[359px]:px-4"
+    >
+      <h1 className="text-[34px] leading-[1.05] font-extrabold tracking-[-0.045em]">
+        You're getting
+        <br />
+        closer.
+      </h1>
+      <div
+        role="group"
+        aria-label="My Path view"
+        className="mt-4 mb-4 grid h-11 grid-cols-2 rounded-full bg-grit-gray p-[3px]"
+      >
+        {(['progress', 'achievements'] as const).map((value) => (
           <button
+            key={value}
             type="button"
-            key={i}
-            onClick={() => go(target)}
-            className="road-line relative flex w-full gap-4 pb-6 text-left"
+            aria-pressed={tab === value}
+            aria-controls="my-path-content"
+            onClick={() => setTab(value)}
+            className={`rounded-full text-[13px]! font-bold! transition-colors ${tab === value ? 'bg-grit-navy text-white' : 'text-grit-navy hover:bg-grit-border'}`}
           >
-            <span
-              className={`relative z-[1] flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${done ? 'bg-lime' : !profile.milestones.includes('build') && i === 3 ? 'bg-purple text-white' : 'bg-white ring-2 ring-navy/20'}`}
-            >
-              {done ? <Check size={17} weight="bold" /> : i + 1}
-            </span>
-            <div className="flex-1 py-1">
-              <p className="text-[13px] font-extrabold text-navy">{name}</p>
-              <p className="mt-1 text-[12px] text-navy/65">{desc}</p>
-            </div>
+            {value === 'progress' ? 'Progress' : 'Achievements'}
           </button>
         ))}
       </div>
-      <Card onClick={() => go('recommend')} className="mb-4 !p-3"><span className="text-[11px] text-navy/65">Current milestone</span><strong className="block text-sm">{chosen?.name || 'Your'} Fundamentals</strong><span className="text-xs text-purple">Explore next ↗</span></Card>
-      <Button onClick={() => go('recommend')}>
-        Continue My Path <ArrowRight size={17} />
-      </Button>
-      <button
-        onClick={() => go('roadmap')}
-        className="w-full py-4 text-xs font-bold text-purple"
-      >
-        View career roadmap ↗
-      </button>
-    </div>
+      <div id="my-path-content">
+        {tab === 'achievements' ? (
+          <Achievements profile={profile} />
+        ) : (
+          <>
+            <section
+              aria-label="Level progress"
+              className="flex items-center gap-4 rounded-[18px] border border-grit-border p-4 max-[359px]:gap-3 max-[359px]:p-3"
+            >
+              <div className="relative h-[120px] w-[120px] shrink-0 max-[359px]:h-[110px] max-[359px]:w-[110px]">
+                <svg
+                  viewBox="0 0 120 120"
+                  className="h-full w-full"
+                  aria-hidden="true"
+                >
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="52"
+                    fill="none"
+                    stroke="#062B49"
+                    strokeWidth="13"
+                  />
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="52"
+                    fill="none"
+                    stroke="#C8FF00"
+                    strokeWidth="13"
+                    pathLength="100"
+                    strokeDasharray={`${percentage} 100`}
+                    strokeLinecap={percentage > 0 ? 'round' : 'butt'}
+                    transform="rotate(90 60 60)"
+                  />
+                  <path d="m61 30 19 38-19 21-20-21Z" fill="#6557F5" />
+                  <path d="m61 30-20 38 20-9Z" fill="#A99BFF" />
+                  <path d="m61 30 19 38-19-9Z" fill="#7C6AFF" />
+                  <path d="m41 68 20-9v30Z" fill="#6557F5" />
+                  <path d="m61 59 19 9-19 21Z" fill="#4235BB" />
+                  <path d="m61 30-10 38" stroke="#EAE7FF" strokeWidth="2" />
+                </svg>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-[26px] leading-tight font-extrabold tracking-[-0.035em]">
+                  Level {currentLevel}
+                </h2>
+                <p className="mt-1 text-[20px] leading-tight font-extrabold text-grit-lime">
+                  {levelNames[currentLevel - 1]}
+                </p>
+                <div className="my-3 h-[3px] w-8 rounded-full bg-grit-purple" />
+                <p className="text-[13px] whitespace-nowrap tabular-nums">
+                  <strong className="font-extrabold">
+                    {profile.xp.toLocaleString('en-US')}
+                  </strong>{' '}
+                  / {xpRequired.toLocaleString('en-US')} XP
+                </p>
+                <div
+                  role="progressbar"
+                  aria-label="XP progress"
+                  aria-valuemin={0}
+                  aria-valuemax={xpRequired}
+                  aria-valuenow={Math.min(xpRequired, Math.max(0, profile.xp))}
+                  aria-valuetext={`${profile.xp} / ${xpRequired} XP`}
+                  className="mt-2 h-[9px] overflow-hidden rounded-full bg-grit-gray"
+                >
+                  <div
+                    className="h-full rounded-full bg-grit-lime"
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+              </div>
+            </section>
+            <div className="mt-4 grid grid-cols-4 gap-2 max-[359px]:gap-1.5">
+              {stats.map(({ value, label, Icon: StatIcon }) => (
+                <article
+                  key={label}
+                  className="flex min-w-0 flex-col items-center rounded-[13px] border border-grit-border px-1 py-3 text-center"
+                >
+                  <StatIcon
+                    size={23}
+                    weight="fill"
+                    className="text-grit-purple"
+                    aria-hidden="true"
+                  />
+                  <strong className="mt-1.5 text-[22px] leading-tight font-extrabold tabular-nums">
+                    {value}
+                  </strong>
+                  <p className="mt-1 text-[10px] leading-tight font-medium whitespace-nowrap text-grit-muted">
+                    {label}
+                  </p>
+                </article>
+              ))}
+            </div>
+            <section className="mt-6" aria-labelledby="recent-achievements">
+              <h2
+                id="recent-achievements"
+                className="text-[19px] font-extrabold tracking-[-0.025em]"
+              >
+                Recent Achievements
+              </h2>
+              <div className="mt-3 grid grid-cols-3 gap-2 max-[359px]:gap-1.5">
+                {achievements.map((achievement) => (
+                  <article
+                    key={achievement.kind}
+                    className="flex min-h-[166px] min-w-0 flex-col items-center rounded-[13px] border border-grit-border px-2 py-3 text-center max-[359px]:px-1"
+                  >
+                    <AchievementBadge kind={achievement.kind} />
+                    <h3 className="mt-2 flex min-h-8 items-center justify-center text-[12px] leading-[1.2] font-extrabold">
+                      {achievement.title}
+                    </h3>
+                    <p className="mt-2 text-[10px] leading-[1.35] text-grit-muted">
+                      {achievement.description}
+                    </p>
+                    <span
+                      className={`mt-auto pt-2 text-[9px] font-semibold ${achievement.unlocked ? 'text-grit-purple' : 'text-grit-muted'}`}
+                    >
+                      {achievement.unlocked ? 'Unlocked' : 'Locked'}
+                    </span>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
+      </div>
+    </section>
   );
 }
 
