@@ -1,8 +1,30 @@
-import type { Field, Mission } from '../../data';
-import type { State } from '../../state';
-import { FieldCard, Gritty, Section } from '../../components/ui';
-import { navigate } from '../../router';
+import type { Mission } from '../../content';
+import type { Profile } from '../../model';
+import { DashboardHeader } from './components/DashboardHeader';
+import { DashboardStats } from './components/DashboardStats';
+import { JourneySection } from './components/JourneySection';
+import { NextStepCard } from './components/NextStepCard';
+import { ProgressSection } from './components/ProgressSection';
 
-export default function HomePage({state,ranked,activeMission,chosen}:{state:State;ranked:Field[];activeMission:Mission;chosen?:Field}) {
-  return <><div className="home-header"><div><div className="eyebrow">MONDAY · YOUR JOURNEY</div><h1>Hi, {state.name}<span className="lime-dot">.</span></h1><p>Ready to discover what’s next?</p></div><Gritty size={78}/></div><div className="scroll home-scroll"><div className="next-card"><div className="eyebrow">✦ YOUR NEXT STEP</div><h2>{state.completedMissions.length?'Keep exploring what you enjoy.':'Try something new.'}</h2><p>{activeMission.title}</p><div className="next-footer"><span>{activeMission.time} · +{activeMission.xp} XP</span><button type="button" onClick={()=>navigate('mission',activeMission.id)}>Start ↗</button></div></div><Section eyebrow="THE BIG PICTURE" title="Your journey"><div className="journey">{['Explore','Experience','Reflect','Decide','Progress'].map((label,index)=><span key={label} className={(index===0&&state.answers.interests.length)||(index===1&&state.completedMissions.length)||(index===2&&state.reflections.length)||(index===3&&chosen)?'complete':''}>{label}</span>)}</div></Section><Section eyebrow="OPEN A NEW DOOR" title="Worth exploring">{ranked.slice(0,2).map(field=><FieldCard key={field.id} field={field} state={state} onClick={()=>navigate('field',field.id)}/>)}</Section><Section eyebrow="LOOK HOW FAR YOU’VE COME" title="Your progress"><button className="stats" onClick={()=>navigate('progress')}><span><strong>{state.xp}</strong><small>XP earned</small></span><span><strong>{state.completedMissions.length}</strong><small>Missions</small></span><span><strong>{state.reflections.length}</strong><small>Reflections</small></span><span className="chevron">↗</span></button></Section></div></>;
+export default function HomeDashboard({
+  profile,
+  suggested,
+  chooseMission,
+}: {
+  profile: Profile;
+  suggested: Mission;
+  chooseMission: (id: string) => void;
+}) {
+  return (
+    <div className="min-h-full bg-grit-white px-[22px] py-[max(28px,env(safe-area-inset-top))] pb-5 text-grit-text max-[359px]:px-4">
+      <DashboardHeader name={profile.name} />
+      <NextStepCard
+        mission={suggested}
+        onStart={() => chooseMission(suggested.id)}
+      />
+      <JourneySection profile={profile} />
+      <ProgressSection profile={profile} />
+      <DashboardStats profile={profile} />
+    </div>
+  );
 }

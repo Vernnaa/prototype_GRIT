@@ -25,7 +25,7 @@ import { ParentView } from './pages/parent/screens';
 import { ProfilePage } from './pages/profile/screens';
 import { ProgressPage } from './pages/progress/screens';
 import { Roadmap } from './pages/path/Roadmap';
-import { Home } from './pages/home/screens';
+import HomeDashboard from './pages/home/page';
 import { Direction, MyPath, Recommend } from './pages/path/screens';
 import { ArrowLeft, ArrowUpRight, CaretRight } from '@phosphor-icons/react';
 import {
@@ -546,15 +546,10 @@ export default function App() {
     case 'home':
     default:
       body = (
-        <Home
+        <HomeDashboard
           profile={profile}
           suggested={suggested}
-          ranked={ranked}
-          fieldCard={fieldCard}
           chooseMission={chooseMission}
-          explore={() => go('explore')}
-          progress={() => go('progress')}
-          coach={() => go('coach')}
         />
       );
   }
