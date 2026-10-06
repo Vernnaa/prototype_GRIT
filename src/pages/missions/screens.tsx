@@ -1,13 +1,15 @@
 import type { ReactNode } from 'react';
 import {
   ArrowRight,
-  Camera,
-  Check,
+  Smiley,
+  SmileyMeh,
+  SmileySad,
+  SmileyWink,
   Lightbulb,
 } from '@phosphor-icons/react';
 import { fields, missions, type Field, type Mission } from '../../content';
 import { completeMission, type Profile, type Reflection } from '../../model';
-import { Bar, Button, Card, Chip, Icon, Label } from '../../components/AppUI';
+import { Button, Card, Chip, Icon, Label, Mascot } from '../../components/AppUI';
 
 type SetProfile = (update: (profile: Profile) => Profile) => void;
 
@@ -18,7 +20,6 @@ export function MissionWorkspace({
   go,
   top,
   bottom,
-  coaching,
 }: {
   mission: Mission;
   profile: Profile;
@@ -26,22 +27,22 @@ export function MissionWorkspace({
   go: (screen: 'reflection' | 'missions') => void;
   top: (name: string) => ReactNode;
   bottom: (content: ReactNode) => ReactNode;
-  coaching: (text: string) => ReactNode;
 }) {
-  const steps = profile.steps[mission.id] || [];
+  const steps = mission.steps.map((_, i) => i).filter(i => profile.steps[mission.id]?.includes(i));
+  const currentStep = mission.steps.findIndex((_, i) => !steps.includes(i));
   return (
-    <div className="relative h-full bg-white px-5 pt-3">
+    <div className="mission-flow mission-workspace">
       {top('')}
-      <h1 className="mt-3 text-[25px] font-extrabold leading-tight tracking-[-.05em]">
-        {mission.title}
+      <h1 className="mt-3 text-[28px] font-extrabold leading-[1.05] tracking-[-.04em]">
+        {mission.id === 'campaign' ? <>Create a Marketing<br />Campaign</> : mission.title}
       </h1>
       <p className="mt-3 text-[13px] text-navy/65">
-        {steps.length} / {mission.steps.length} steps completed · {mission.time}
+        {steps.length} / {mission.steps.length} Steps completed
       </p>
-      <div className="my-5">
-        <Bar value={(steps.length / mission.steps.length) * 100} />
+      <div className="mission-progress" role="progressbar" aria-label="Mission progress" aria-valuemin={0} aria-valuemax={mission.steps.length} aria-valuenow={steps.length}>
+        <div style={{ width: `${steps.length / mission.steps.length * 100}%` }} />
       </div>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {mission.steps.map((s, i) => (
           <button
             key={s}
@@ -61,30 +62,27 @@ export function MissionWorkspace({
                 };
               })
             }
-            className="flex min-h-[68px] w-full items-center gap-3 rounded-2xl border border-navy/8 bg-white p-2.5 text-left shadow-sm"
+            className="mission-step"
+            data-status={steps.includes(i) ? 'completed' : i === currentStep ? 'current' : 'upcoming'}
           >
             <span
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-extrabold ${steps.includes(i) ? 'bg-navy text-lime' : 'bg-paper'}`}
+              className="mission-step-number"
             >
-              {steps.includes(i) ? <Check size={18} /> : i + 1}
+              {i + 1}
             </span>
-            <span className="text-[13px] font-semibold">
+            <span className="mission-step-card">
               {s}
-              <small className="block pt-1 font-medium text-navy/50">
-                  {steps.includes(i) ? 'Completed' : 'Tap when you’re done'}
+              <small>
+                  {steps.includes(i) ? 'Completed' : i === currentStep ? 'In progress' : 'Not started'}
               </small>
             </span>
           </button>
         ))}
       </div>
-      <div className="mt-6">
-        {coaching('You’re doing great. One step at a time.')}
+      <div className="mission-encouragement">
+        <Mascot size={90} className="shrink-0 !filter-none" />
+        <p>You're doing great.<br />One step at a time!</p>
       </div>
-      <label className="mt-4 flex min-h-11 items-center gap-2 text-xs font-bold">
-        <Camera size={18} />
-        <span>Optional: add a photo of your work</span>
-        <input type="file" accept="image/*" className="max-w-24 text-[10px]" />
-      </label>
       {bottom(
         <>
           <Button
@@ -95,14 +93,8 @@ export function MissionWorkspace({
               go('reflection');
             }}
           >
-            Finish & Reflect <ArrowRight size={17} />
+            Continue
           </Button>
-          <button
-            onClick={() => go('missions')}
-            className="mt-2 w-full py-2 text-xs font-bold"
-          >
-            Save progress & exit
-          </button>
         </>,
       )}
     </div>
@@ -123,7 +115,6 @@ export function MissionReflection({
   setProfile,
   go,
   top,
-  headline,
   bottom,
 }: {
   mission: Mission;
@@ -137,41 +128,37 @@ export function MissionReflection({
   setAgain: (value: string) => void;
   setError: (value: string) => void;
   setProfile: SetProfile;
-  go: (screen: 'insight') => void;
+  go: (screen: 'direction') => void;
   top: (name: string) => ReactNode;
-  headline: (title: string, sub: string) => ReactNode;
   bottom: (content: ReactNode) => ReactNode;
 }) {
   return (
-    <div className="relative h-full bg-white px-5 pt-3">
-      {top('Reflect')}
-      {headline(
-        'How did that feel?',
-        'Your experience matters. Let’s reflect on what you just did.',
-      )}
+    <div className="mission-flow mission-reflection">
+      {top('')}
+      <h1 className="mt-3 text-[30px] font-extrabold leading-[1.05] tracking-[-.04em]">How did that feel?</h1>
+      <p className="mt-3 mb-6 text-[14px] leading-[1.35] text-grit-muted">Your experience matters. Let's reflect<br />on what you just did.</p>
       <h2 className="mb-3 text-sm font-extrabold">Did you enjoy this?</h2>
       <div className="mb-6 grid grid-cols-4 gap-2">
-        {['Loved it', 'Liked it', 'It was okay', 'Not for me'].map((x, i) => (
+        {['Loved it', 'Liked it', 'It was okay', 'Not for me'].map((x, i) => {
+          const Face = [SmileyWink, Smiley, SmileyMeh, SmileySad][i];
+          return (
           <button
             aria-pressed={feeling === x}
-            onClick={() => setFeeling(x)}
+            onClick={() => { setFeeling(x); setError(''); }}
             key={x}
-            className={`flex min-h-[92px] flex-col items-center justify-center rounded-xl border-2 p-1 text-center text-[11px] font-bold ${feeling === x ? 'border-lime bg-navy text-white' : 'border-navy/8 bg-white'}`}
+            type="button"
+            className="emotion-option"
           >
-            <span
-              className={`mb-2 text-xl ${feeling === x ? 'text-lime' : 'text-purple'}`}
-            >
-              {['☺', '◡', '○', '⌢'][i]}
-            </span>
+            <Face size={30} aria-hidden="true" />
             {x}
           </button>
-        ))}
+        );})}
       </div>
       <label className="block text-[13px] font-extrabold">
         What did you enjoy most?
         <textarea
           value={enjoyed}
-          onChange={(e) => setEnjoyed(e.target.value)}
+          onChange={(e) => { setEnjoyed(e.target.value); setError(''); }}
           placeholder="The part that felt good..."
           className="mt-2 h-20 w-full resize-none rounded-xl border border-navy/10 bg-white p-3 text-xs font-medium"
         />
@@ -180,7 +167,7 @@ export function MissionReflection({
         What felt challenging?
         <textarea
           value={challenge}
-          onChange={(e) => setChallenge(e.target.value)}
+          onChange={(e) => { setChallenge(e.target.value); setError(''); }}
           placeholder="The tricky part..."
           className="mt-2 h-20 w-full resize-none rounded-xl border border-navy/10 bg-white p-3 text-xs font-medium"
         />
@@ -189,9 +176,9 @@ export function MissionReflection({
         <h2 className="mb-3 text-[13px] font-extrabold">Would you like to try something similar?</h2>
         <div className="grid grid-cols-2 gap-2">
           {['Yes', 'Not sure yet'].map((x) => (
-            <Chip key={x} active={again === x} onClick={() => setAgain(x)}>
+            <button type="button" key={x} aria-pressed={again === x} onClick={() => { setAgain(x); setError(''); }} className="similar-option">
               {x}
-            </Chip>
+            </button>
           ))}
         </div>
       </div>
@@ -217,10 +204,10 @@ export function MissionReflection({
                 result,
               ],
             }));
-            go('insight');
+            go('direction');
           }}
         >
-          See What We Learned <ArrowRight size={17} />
+          See What We Learned
         </Button>,
       )}
     </div>

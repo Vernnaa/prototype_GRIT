@@ -60,6 +60,7 @@ export default function App() {
     'consulting',
   ]);
   const [previous, setPrevious] = useState<Screen>('explore');
+  const [missionFlow, setMissionFlow] = useState(false);
   const [modal, setModal] = useState('');
   const [tab, setTab] = useState<'progress' | 'achievements'>('progress');
   const [started, setStarted] = useState(false);
@@ -82,12 +83,13 @@ export default function App() {
     }
   }, [profile.start, started]);
   const go = (next: Screen) => {
+    if (!['workspace', 'reflection', 'direction'].includes(next)) setMissionFlow(false);
     setPrevious(screen);
     setError('');
     setModal('');
     setScreen(next);
   };
-  const back = () => go(previous === 'splash' ? 'home' : previous);
+  const back = () => go(missionFlow && screen === 'direction' ? 'reflection' : screen === 'reflection' ? 'workspace' : screen === 'workspace' ? 'mission' : previous === 'splash' ? 'home' : previous);
   const update = (part: Partial<Profile>) =>
     setProfile((p) => ({ ...p, ...part }));
   const ranked = rankFields(profile.answers, profile.dream);
@@ -108,6 +110,11 @@ export default function App() {
     go('field');
   };
   const chooseMission = (id: string) => {
+    const savedReflection = profile.reflections.find(r => r.mission === id);
+    setFeeling(savedReflection?.feeling || '');
+    setEnjoyed(savedReflection?.enjoyed || '');
+    setChallenge(savedReflection?.challenge || '');
+    setAgain(savedReflection?.again || '');
     setMissionId(id);
     go('mission');
   };
@@ -174,9 +181,9 @@ export default function App() {
         type="button"
         aria-label="Go back"
         onClick={() => (screen === 'quiz' && q > 0 ? setQ(q - 1) : back())}
-        className="flex h-10 w-10 items-center justify-center rounded-xl bg-white"
+        className={`flex items-center justify-center ${missionFlow ? 'h-11 w-11 text-grit-navy' : 'h-10 w-10 rounded-xl bg-white'}`}
       >
-        <ArrowLeft size={19} />
+        <ArrowLeft size={missionFlow ? 23 : 19} />
       </button>
       <span className="text-xs font-extrabold">{name || ''}</span>
     </div>
@@ -379,7 +386,7 @@ export default function App() {
           headline={headline}
           sections={sections}
           bottom={bottom}
-          onStart={() => go('workspace')}
+          onStart={() => { setMissionFlow(true); go('workspace'); }}
         />
       );
       break;
@@ -392,7 +399,6 @@ export default function App() {
           go={go}
           top={top}
           bottom={bottom}
-          coaching={coaching}
         />
       );
       break;
@@ -413,7 +419,6 @@ export default function App() {
           setProfile={setProfile}
           go={go}
           top={top}
-          headline={headline}
           bottom={bottom}
         />
       );
@@ -436,7 +441,7 @@ export default function App() {
       body = (
         <Direction
           profile={profile}
-          ranked={ranked}
+          ranked={missionFlow ? rankFields([...profile.answers, mission.skills, [enjoyed]], mission.field) : ranked}
           top={top}
           headline={headline}
           chooseField={chooseField}
@@ -445,6 +450,9 @@ export default function App() {
             go('path');
           }}
           explore={() => go('explore')}
+          mission={missionFlow ? mission : undefined}
+          reflection={missionFlow ? reflection : undefined}
+          back={back}
         />
       );
       break;
@@ -552,6 +560,7 @@ export default function App() {
   }
   return (
     <AppShell
+      missionFlow={missionFlow}
       screen={screen}
       go={go}
       modal={

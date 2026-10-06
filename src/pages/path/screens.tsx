@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import {
   ArrowRight,
+  ArrowLeft,
   ArrowUpRight,
   BookOpen,
   CaretRight,
@@ -10,8 +11,8 @@ import {
   SquaresFour,
   User,
 } from '@phosphor-icons/react';
-import { missions, type Field, type Mission } from '../../content';
-import { level, levelNames, type Profile } from '../../model';
+import { fields, missions, type Field, type Mission } from '../../content';
+import { level, levelNames, type Profile, type Reflection } from '../../model';
 import { Achievements } from '../progress/Achievements';
 import { Button, Card, Icon, Label } from '../../components/AppUI';
 
@@ -23,6 +24,9 @@ export function Direction({
   chooseField,
   build,
   explore,
+  mission,
+  reflection,
+  back,
 }: {
   profile: Profile;
   ranked: Field[];
@@ -31,7 +35,50 @@ export function Direction({
   chooseField: (id: string) => void;
   build: () => void;
   explore: () => void;
+  mission?: Mission;
+  reflection?: Reflection;
+  back?: () => void;
 }) {
+  if (mission && reflection && back) {
+    const directions = mission.id === 'campaign'
+      ? ['marketing', 'entrepreneurship', 'consulting'].map(id => fields.find(field => field.id === id)!)
+      : ranked.slice(0, 3);
+    const descriptions: Record<string, string> = {
+      marketing: 'Creative problem solving and communication may be worth exploring.',
+      entrepreneurship: 'Explore building ideas and creating value.',
+      consulting: 'Try analyzing challenges and finding solutions.',
+    };
+    return <section className="mission-flow mission-direction" aria-label="Your Direction">
+      <button type="button" className="mission-back" aria-label="Go back" onClick={back}><ArrowLeft size={23} /></button>
+      <h1 className="mt-3 text-[28px] leading-[1.05] font-extrabold tracking-[-.04em]">
+        {reflection.feeling === 'Not for me' ? 'Knowing what feels right is progress, too.' : <>You seem to enjoy<br />{reflection.enjoyed.replace(/[.!?]+$/, '')}.</>}
+      </h1>
+      <p className="mt-3 text-[14px] text-grit-muted">That may be a sign worth exploring.</p>
+      <div className="mt-6 space-y-3">
+        {directions.map((field, i) => <button type="button" key={field.id} onClick={() => chooseField(field.id)} className="mission-direction-card">
+          <svg viewBox="0 0 64 64" className="h-14 w-14 shrink-0" aria-hidden="true">
+            <circle cx="32" cy="32" r="32" fill={['#EAE7FF', '#EEF5FA', '#EAE7FF'][i]} />
+            <path d="M9 64v-8c0-12 10-19 23-19s23 7 23 19v8Z" fill={['#6557F5', '#062B49', '#6557F5'][i]} />
+            <path d="M26 34h12v10l-6 5-6-5Z" fill="#BD825F" />
+            <ellipse cx="32" cy="25" rx="13" ry="16" fill={['#DCA47D', '#BB7F59', '#E0B292'][i]} />
+            <path d={i === 1 ? 'M18 25V15c0-12 29-13 28 4l-5 9-3-12-16 4v8Z' : 'M18 27V17c0-16 28-14 28 0v11l-5-7-5-8-13 8-2 9Z'} fill="#03233D" />
+            <path d="M27 31q5 5 10 0" fill="none" stroke="#062B49" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="m25 44 7 5 7-5-7 17Z" fill="#C8FF00" />
+          </svg>
+          <span className="min-w-0 flex-1">
+            <strong className="block text-[15px] font-extrabold">{field.name}</strong>
+            <span className="mt-1 block text-[11px] leading-[1.35] text-grit-muted">{descriptions[field.id] || field.summary}</span>
+            <span className="mt-2 inline-block rounded-full bg-grit-lime px-2.5 py-1 text-[10px] font-bold">Worth exploring</span>
+          </span>
+          <ArrowRight size={20} className="shrink-0" aria-hidden="true" />
+        </button>)}
+      </div>
+      <div className="mt-6 space-y-2">
+        <Button className="!bg-grit-lime !text-grit-navy" onClick={explore}>Explore These Directions</Button>
+        <Button variant="outline" className="!border-grit-navy !text-grit-navy" onClick={explore}>Keep Exploring</Button>
+      </div>
+    </section>;
+  }
   return (
     <div className="bg-white px-5 pt-3">
       {top('My direction')}
