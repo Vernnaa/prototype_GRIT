@@ -1,102 +1,46 @@
-import {
-  Bell,
-  CaretRight,
-  Gear,
-  PencilSimple,
-  Question,
-  ShieldCheck,
-  UserCircle,
-  UsersThree,
-} from '@phosphor-icons/react';
+import { Briefcase, CaretRight, Gear, Heart, MapTrifold, Question, SignOut, Star, Target, Trophy } from '@phosphor-icons/react';
 import type { Profile } from '../../model';
-import { Bar, Card, Icon } from '../../components/AppUI';
 import type { Screen } from '../../components/AppShell';
 
-export function ProfilePage({
-  profile,
-  go,
-  setModal,
-}: {
-  profile: Profile;
-  go: (screen: Screen) => void;
-  setModal: (modal: string) => void;
-}) {
-  return (
-    <div className="bg-white px-5 pt-6">
-      <div className="mb-7 flex items-center gap-4">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-purple/15 text-purple">
-          <UserCircle size={48} />
-        </div>
-        <div className="flex-1">
-          <h1 className="text-[23px] font-extrabold">{profile.name}</h1>
-          <p className="text-[13px] text-navy/60">Exploring their future</p>
-          <button className="mt-2 rounded-full bg-paper px-4 py-1.5 text-xs font-bold" onClick={() => setModal('name')}>Edit Profile</button>
-        </div>
-        <button aria-label="Edit profile" onClick={() => setModal('name')}>
-          <PencilSimple size={18} />
-        </button>
-      </div>
-      <Card className="mb-5 !bg-navy text-white">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-bold">Your exploration</span>
-          <span className="text-xs font-bold text-lime">{profile.xp} XP</span>
-        </div>
-        <div className="mt-3">
-          <Bar value={((profile.xp % 250) / 250) * 100} />
-        </div>
-      </Card>
-      {(
-        [
-          ['My Interests', 'heart', 'interestsView'],
-          ['My Strengths', 'spark', 'strengthsView'],
-          ['My Values', 'flag', 'valuesView'],
-          ['My Experiences', 'rocket', 'progress'],
-          ['My Directions', 'path', 'direction'],
-          ['My Achievements', 'spark', 'achievements'],
-          ['My Goals', 'flag', 'roadmap'],
-        ] as const
-      ).map(([name, icon, target]) => (
-        <button
-          key={name}
-          onClick={() =>
-            target.endsWith('View') ? setModal(target) : go(target as Screen)
-          }
-          className="flex min-h-[52px] w-full items-center gap-3 border-b border-navy/8 text-left"
-        >
-          <Icon name={icon} size={18} className="text-purple" />
-          <span className="flex-1 text-[13px] font-semibold">{name}</span>
-          <CaretRight size={16} />
-        </button>
-      ))}
-      <div className="mt-6">
-        {(
-          [
-            ['Settings', Gear],
-            ['Notifications', Bell],
-            ['Privacy', ShieldCheck],
-            ['Help', Question],
-            ['Parent view', UsersThree],
-          ] as const
-        ).map(([name, Comp]) => (
-          <button
-            key={name}
-            onClick={() =>
-              name === 'Parent view' ? go('parent') : setModal(name)
-            }
-            className="flex min-h-11 w-full items-center gap-3 text-left"
-          >
-            <Comp size={17} />
-            <span className="flex-1 text-xs font-bold">{name}</span>
-            <CaretRight size={16} />
-          </button>
-        ))}
-      </div>
-      <button
-        className="mt-5 text-[11px] font-bold text-navy/50 underline"
-        onClick={() => setModal('reset')}
-      >
-        Restart prototype
-      </button>
-    </div>
-  );
+export function ProfilePage({ profile, go, setModal }: { profile: Profile; go: (screen: Screen) => void; setModal: (modal: string) => void }) {
+  const groups = [
+    [
+      { label: 'My Interests', Icon: Heart, action: () => setModal('interestsView') },
+      { label: 'My Strengths', Icon: Star, action: () => setModal('strengthsView') },
+      { label: 'My Experiences', Icon: Briefcase, action: () => go('progress') },
+      { label: 'My Directions', Icon: MapTrifold, action: () => go('direction') },
+      { label: 'My Achievements', Icon: Trophy, action: () => go('achievements') },
+      { label: 'My Goals', Icon: Target, action: () => go('roadmap') },
+    ],
+    [
+      { label: 'Settings', Icon: Gear, action: () => setModal('Settings') },
+      { label: 'Help & Support', Icon: Question, action: () => setModal('Help & Support') },
+      { label: 'Log Out', Icon: SignOut, action: () => setModal('logout') },
+    ],
+  ];
+  return <section aria-label="Profile" className="profile-hub">
+    <header className="profile-identity">
+      <button type="button" className="profile-settings" aria-label="Open Settings" onClick={() => setModal('Settings')}><Gear size={24} aria-hidden="true" /></button>
+      <svg viewBox="0 0 96 96" role="img" aria-label={`${profile.name}, student avatar`} className="profile-avatar">
+        <defs><clipPath id="profile-avatar-circle"><circle cx="48" cy="48" r="48" /></clipPath></defs>
+        <g clipPath="url(#profile-avatar-circle)">
+          <circle cx="48" cy="48" r="48" fill="#F5F6F8" />
+          <path d="M12 96V84c0-19 15-29 36-29s36 10 36 29v12Z" fill="#062B49" />
+          <path d="M38 50h20v18l-10 9-10-9Z" fill="#C78E6D" />
+          <ellipse cx="48" cy="36" rx="21" ry="25" fill="#E3B18C" />
+          <path d="M27 40V24C27 2 71 1 70 26v15l-7-10-5-14-24 14-3 14Z" fill="#03233D" />
+          <path d="M38 40h2m16 0h2" stroke="#03233D" strokeWidth="3" strokeLinecap="round" />
+          <path d="M41 49q7 7 14 0" fill="none" stroke="#062B49" strokeWidth="2" strokeLinecap="round" />
+          <path d="m35 65 13 12 13-12-5 31H40Z" fill="#FFFFFF" />
+          <path d="m26 69 9-4 5 31H25Zm44 0-9-4-5 31h15Z" fill="#6557F5" />
+        </g>
+      </svg>
+      <div className="profile-info"><h1>{profile.name}</h1><p>High School Student</p><button type="button" className="profile-edit" onClick={() => setModal('name')}>Edit Profile</button></div>
+    </header>
+    {groups.map((items, index) => <nav key={index} aria-label={index === 0 ? 'Personal exploration' : 'Account and support'} className="profile-menu-group">
+      {items.map(({ label, Icon, action }) => <button type="button" className="profile-menu-item" key={label} onClick={action}>
+        <Icon size={23} weight="regular" aria-hidden="true" /><span>{label}</span><CaretRight size={19} className="profile-chevron" aria-hidden="true" />
+      </button>)}
+    </nav>)}
+  </section>;
 }

@@ -9,6 +9,8 @@ export function ProfileDialog({
   profile,
   update,
   restart,
+  logout,
+  openSetting,
   sections,
 }: {
   modal: string;
@@ -16,6 +18,8 @@ export function ProfileDialog({
   profile: Profile;
   update: (part: Partial<Profile>) => void;
   restart: () => void;
+  logout: () => void;
+  openSetting: (label: string) => void;
   sections: (items: string[]) => ReactNode;
 }) {
   if (!modal) return null;
@@ -27,14 +31,19 @@ export function ProfileDialog({
       onClick={close}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="profile-dialog-title"
         onClick={(e) => e.stopPropagation()}
         className="w-full rounded-t-[28px] bg-white p-6 pb-[max(24px,env(safe-area-inset-bottom))]"
       >
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-extrabold">
+          <h2 id="profile-dialog-title" className="text-lg font-extrabold">
             {modal === 'name'
               ? 'Edit profile'
-              : modal === 'reset'
+               : modal === 'logout'
+                 ? 'Log out of the demo?'
+               : modal === 'reset'
                 ? 'Start over?'
                 : modal.endsWith('View')
                   ? modal
@@ -58,6 +67,17 @@ export function ProfileDialog({
             />
             <Button onClick={close}>Save</Button>
           </label>
+        ) : modal === 'logout' ? (
+          <>
+            <p className="mb-5 text-sm text-navy/65">Return to Welcome. Your progress stays saved in this browser.</p>
+            <Button variant="navy" onClick={logout}>Log Out</Button>
+            <Button variant="outline" className="mt-2" onClick={close}>Cancel</Button>
+          </>
+        ) : modal === 'Settings' ? (
+          <div className="space-y-3">
+            <p className="text-sm text-navy/65">Manage your browser-only GRIT prototype.</p>
+            {['Notifications', 'Privacy', 'Parent view', 'Restart prototype'].map(label => <Button key={label} variant="outline" onClick={() => openSetting(label)}>{label}</Button>)}
+          </div>
         ) : modal === 'reset' ? (
           <>
             <p className="mb-5 text-xs">
@@ -77,7 +97,9 @@ export function ProfileDialog({
           </div>
         ) : (
           <p className="text-xs leading-relaxed text-navy/65">
-            {modal === 'Privacy'
+            {modal === 'Help & Support'
+              ? 'Start with Explore to discover possibilities, then try a mission and reflect on what you enjoyed. Use GRIT Coach from Home for guided help. Your progress is saved in this browser.'
+              : modal === 'Privacy'
               ? 'Prototype progress is stored only in this browser. Parent view is available from this profile.'
               : modal === 'Notifications'
                 ? 'Keep exploring to see your next steps here.'

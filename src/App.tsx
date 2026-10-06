@@ -566,6 +566,8 @@ export default function App() {
       go={go}
       modal={
         <ProfileDialog
+          logout={() => go('welcome')}
+          openSetting={label => label === 'Parent view' ? go('parent') : setModal(label === 'Restart prototype' ? 'reset' : label)}
           modal={modal}
           close={() => setModal('')}
           profile={profile}

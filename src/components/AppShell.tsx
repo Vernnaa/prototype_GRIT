@@ -65,7 +65,7 @@ export function AppShell({
         </div>
         {navVisible && (
           <>
-            {screen !== 'coach' && !isHome && !missionFlow && !exploreFlow && (
+            {screen !== 'coach' && screen !== 'profile' && !isHome && !missionFlow && !exploreFlow && (
               <button
                 type="button"
                 aria-label="Open GRIT Coach"
