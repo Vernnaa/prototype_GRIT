@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Icon, Mascot, Card } from './components/AppUI';
+import { Icon, Card } from './components/AppUI';
 import { Achievements } from './pages/progress/Achievements';
 import { Coach } from './pages/coach/screens';
 import {
@@ -8,12 +8,10 @@ import {
   StartingPoint,
   Quiz,
   NoIdea,
-  ExplorerProfile,
 } from './pages/onboarding/screens';
 import { AppShell, type Screen } from './components/AppShell';
 import {
   Missions,
-  MissionDetail,
   MissionWorkspace,
   MissionReflection,
   Insight,
@@ -35,22 +33,23 @@ import {
   type Field,
   type Mission,
 } from './content';
-import { initial, load, recordVisit, storageKey, type Profile } from './model';
+import { completeDemoOnboarding, demoReflection, initial, load, recordVisit, startMission, storageKey, type JourneyScreen, type Profile } from './model';
 
 export default function App() {
   const [profile, setProfile] = useState<Profile>(load);
   const [screen, setScreen] = useState<Screen>(() =>
-    load().start ? 'home' : 'splash',
+    load().start ? load().journey?.screen || 'home' : 'splash',
   );
-  const [fieldId, setFieldId] = useState('marketing');
-  const [missionId, setMissionId] = useState('campaign');
+  const [fieldId, setFieldId] = useState(() => profile.journey?.fieldId || 'marketing');
+  const [missionId, setMissionId] = useState(() => profile.journey?.missionId || profile.activeMission || 'campaign');
   const [q, setQ] = useState(0);
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
-  const [feeling, setFeeling] = useState('');
-  const [enjoyed, setEnjoyed] = useState('');
-  const [challenge, setChallenge] = useState('');
-  const [again, setAgain] = useState('');
+  const savedDraft = demoReflection(profile, missionId);
+  const [feeling, setFeeling] = useState(savedDraft.feeling);
+  const [enjoyed, setEnjoyed] = useState(savedDraft.enjoyed);
+  const [challenge, setChallenge] = useState(savedDraft.challenge);
+  const [again, setAgain] = useState(savedDraft.again);
   const [error, setError] = useState('');
   const [chat, setChat] = useState<{ who: 'me' | 'coach'; text: string }[]>([]);
   const [message, setMessage] = useState('');
@@ -60,8 +59,8 @@ export default function App() {
     'consulting',
   ]);
   const [previous, setPrevious] = useState<Screen>('explore');
-  const [missionFlow, setMissionFlow] = useState(false);
-  const [exploreMission, setExploreMission] = useState(false);
+  const missionFlow = ['workspace', 'reflection', 'insight', 'mission-direction'].includes(screen);
+  const [directionFilter, setDirectionFilter] = useState(false);
   const [modal, setModal] = useState('');
   const [tab, setTab] = useState<'progress' | 'achievements'>('progress');
   const [started, setStarted] = useState(false);
@@ -72,6 +71,18 @@ export default function App() {
       /* Browsing without storage still works. */
     }
   }, [profile]);
+  useEffect(() => {
+    const inJourney = ['explorer', 'explore', 'discover', 'field', 'mission', 'missions', 'workspace', 'reflection', 'mission-direction'].includes(screen);
+    setProfile(p => {
+      const journey = inJourney ? { screen: (screen === 'explorer' ? 'explore' : screen) as JourneyScreen, fieldId, missionId } : undefined;
+      if (p.journey?.screen === journey?.screen && p.journey?.fieldId === journey?.fieldId && p.journey?.missionId === journey?.missionId) return p;
+      return { ...p, journey };
+    });
+  }, [screen, fieldId, missionId]);
+  useEffect(() => {
+    if (screen !== 'reflection') return;
+    setProfile(p => ({ ...p, reflectionDraft: { mission: missionId, feeling, enjoyed, challenge, again } }));
+  }, [screen, missionId, feeling, enjoyed, challenge, again]);
   useEffect(() => {
     if (screen !== 'splash') return;
     const timer = setTimeout(() => setScreen('welcome'), 2200);
@@ -84,7 +95,12 @@ export default function App() {
     }
   }, [profile.start, started]);
   const go = (next: Screen) => {
-    if (!['workspace', 'reflection', 'direction'].includes(next)) setMissionFlow(false);
+    if (next === 'discover') { setDirectionFilter(false); setFilter('All'); setSearch(''); }
+    if (next === 'reflection') {
+      const template = demoReflection(profile, missionId);
+      setEnjoyed(value => value.trim() ? value : template.enjoyed);
+      setChallenge(value => value.trim() ? value : template.challenge);
+    }
     setPrevious(screen);
     setError('');
     setModal('');
@@ -97,19 +113,14 @@ export default function App() {
       else go(profile.start === 'none' ? 'noidea' : 'start');
       return;
     }
-    go(screen === 'start' ? 'welcome' : screen === 'noidea' ? 'start' : missionFlow && screen === 'direction' ? 'reflection' : screen === 'reflection' ? 'workspace' : screen === 'workspace' ? 'mission' : previous === 'splash' ? 'home' : previous);
+    go(screen === 'start' ? 'welcome' : screen === 'noidea' ? 'start' : screen === 'mission-direction' ? 'reflection' : screen === 'reflection' ? 'workspace' : screen === 'workspace' ? 'mission' : previous === 'splash' ? 'home' : previous);
   };
   const update = (part: Partial<Profile>) =>
     setProfile((p) => ({ ...p, ...part }));
-  const ranked = rankFields(profile.answers, profile.dream);
+  const ranked = [fields.find(f => f.id === 'marketing')!, ...rankFields(profile.answers, 'marketing').filter(f => f.id !== 'marketing')];
   const field = fields.find((f) => f.id === fieldId) || fields[0];
   const mission = missions.find((m) => m.id === missionId) || missions[0];
-  const suggested =
-    missions.find(
-      (m) => m.field === ranked[0].id && !profile.completed.includes(m.id),
-    ) ||
-    missions.find((m) => !profile.completed.includes(m.id)) ||
-    missions[0];
+  const suggested = missions.find(m => m.id === 'campaign')!;
   const chooseField = (id: string) => {
     setFieldId(id);
     setProfile((p) => ({
@@ -118,15 +129,27 @@ export default function App() {
     }));
     go('field');
   };
-  const chooseMission = (id: string) => {
-    setExploreMission(screen === 'field');
-    const savedReflection = profile.reflections.find(r => r.mission === id);
-    setFeeling(savedReflection?.feeling || '');
-    setEnjoyed(savedReflection?.enjoyed || '');
-    setChallenge(savedReflection?.challenge || '');
-    setAgain(savedReflection?.again || '');
+  const selectMission = (id: string) => {
+    const selected = missions.find(m => m.id === id);
+    if (!selected) return;
+    const savedReflection = demoReflection(profile, id);
+    setFeeling(savedReflection.feeling);
+    setEnjoyed(savedReflection.enjoyed);
+    setChallenge(savedReflection.challenge);
+    setAgain(savedReflection.again);
     setMissionId(id);
+    setFieldId(selected.field);
+  };
+  const chooseMission = (id: string) => {
+    selectMission(id);
     go('mission');
+  };
+  const beginMission = (id = missionId) => {
+    const selected = missions.find(m => m.id === id);
+    if (!selected) return;
+    selectMission(id);
+    setProfile(p => startMission(p, id));
+    go('workspace');
   };
   const bottom = (content: ReactNode) => (
     <div className="inset-action sticky bottom-0 z-10 -mx-5 mt-6 px-5 pt-4 pb-[max(20px,env(safe-area-inset-bottom))]">
@@ -196,12 +219,6 @@ export default function App() {
         <ArrowLeft size={screen === 'noidea' ? 24 : missionFlow ? 23 : 19} />
       </button>
       <span className="text-xs font-extrabold">{name || ''}</span>
-    </div>
-  );
-  const coaching = (text: string) => (
-    <div className="flex items-center gap-2 rounded-2xl bg-purple/8 p-3">
-      <Mascot size={43} />
-      <p className="text-[11px] font-semibold leading-snug">{text}</p>
     </div>
   );
   const headline = (text: string, sub?: string) => (
@@ -302,38 +319,22 @@ export default function App() {
           setProfile={setProfile}
           setError={setError}
           onBack={back}
-          onComplete={() => go('explorer')}
+          onComplete={() => { setProfile(completeDemoOnboarding); setFieldId('marketing'); setMissionId('campaign'); go('explorer'); }}
         />
       );
       break;
     }
     case 'explorer':
-      body = (
-        <ExplorerProfile
-          profile={profile}
-          headline={headline}
-          sections={sections}
-          coaching={coaching}
-          bottom={bottom}
-          continueJourney={() =>
-            profile.start === 'dream' && profile.dream
-              ? chooseField(profile.dream)
-              : go('explore')
-          }
-        />
-      );
-      break;
     case 'explore': {
       body = (
         <Explore
-          profile={profile}
-          discover={() => go('discover')}
+          discover={() => { setDirectionFilter(false); setFilter('All'); setSearch(''); go('discover'); }}
         />
       );
       break;
     }
     case 'discover':
-      body = <DiscoverPossibilities profile={profile} filter={filter} setFilter={setFilter} search={search} setSearch={setSearch} chooseField={chooseField} back={() => go('explore')} />;
+      body = <DiscoverPossibilities directions={directionFilter} filter={filter} setFilter={setFilter} search={search} setSearch={setSearch} chooseField={chooseField} back={() => go('explore')} />;
       break;
     case 'field':
       body = (
@@ -359,27 +360,10 @@ export default function App() {
       );
       break;
     case 'missions':
-      body = (
-        <Missions
-          suggested={suggested}
-          headline={headline}
-          chooseMission={chooseMission}
-          onProgress={() => go('progress')}
-          missionCard={missionCard}
-        />
-      );
+      body = <Missions profile={profile} chooseMission={chooseMission} />;
       break;
     case 'mission':
-      body = exploreMission ? <TryMission mission={mission} field={field} profile={profile} update={update} back={() => go('field')} start={() => { setMissionFlow(true); go('workspace'); }} /> : (
-        <MissionDetail
-          mission={mission}
-          profile={profile}
-          top={top}
-          headline={headline}
-          sections={sections}
-          onStart={() => { setMissionFlow(true); go('workspace'); }}
-        />
-      );
+      body = <TryMission mission={mission} field={field} profile={profile} update={update} back={() => go('missions')} start={() => beginMission()} />;
       break;
     case 'workspace': {
       body = (
@@ -424,11 +408,12 @@ export default function App() {
           top={top}
           headline={headline}
           bottom={bottom}
-          continueJourney={() => go('direction')}
+          continueJourney={() => go('mission-direction')}
         />
       );
       break;
     case 'direction':
+    case 'mission-direction':
       body = (
         <Direction
           profile={profile}
@@ -440,9 +425,9 @@ export default function App() {
             update({ direction: ranked[0].id });
             go('path');
           }}
-          explore={() => go('explore')}
+          explore={() => { setDirectionFilter(false); setFilter('All'); setSearch(''); go('discover'); }}
           mission={missionFlow ? mission : undefined}
-          discover={() => go('discover')}
+          discover={() => { go('discover'); setDirectionFilter(true); }}
           reflection={missionFlow ? reflection : undefined}
           back={back}
         />
@@ -552,14 +537,12 @@ export default function App() {
   }
   return (
     <AppShell
-      exploreFlow={['explore', 'discover', 'field'].includes(screen) || (screen === 'mission' && exploreMission)}
-      missionFlow={missionFlow}
       screen={screen}
       go={go}
       modal={
         <ProfileDialog
           logout={() => go('welcome')}
-          openSetting={label => label === 'Parent view' ? go('parent') : setModal(label === 'Restart prototype' ? 'reset' : label)}
+          openSetting={label => label === 'Parent view' ? go('parent') : setModal(label === 'Reset Prototype' ? 'reset' : label)}
           modal={modal}
           close={() => setModal('')}
           profile={profile}
@@ -568,6 +551,20 @@ export default function App() {
           restart={() => {
             setProfile(initial);
             setQ(0);
+            setFieldId('marketing');
+            setMissionId('campaign');
+            setFilter('All');
+            setSearch('');
+            setDirectionFilter(false);
+            const template = demoReflection(initial, 'campaign');
+            setFeeling(template.feeling);
+            setEnjoyed(template.enjoyed);
+            setChallenge(template.challenge);
+            setAgain(template.again);
+            setChat([]);
+            setMessage('');
+            setCompare(['marketing', 'entrepreneurship', 'consulting']);
+            setTab('progress');
             setStarted(false);
             setModal('');
             go('welcome');

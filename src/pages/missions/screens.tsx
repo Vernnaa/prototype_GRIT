@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   ArrowRight,
   Smiley,
@@ -6,10 +6,13 @@ import {
   SmileySad,
   SmileyWink,
   Lightbulb,
+  CaretRight,
+  Clock,
+  Sparkle,
 } from '@phosphor-icons/react';
 import { fields, missions, type Field, type Mission } from '../../content';
 import { completeMission, type Profile, type Reflection } from '../../model';
-import { Button, Card, Chip, Icon, Label, Mascot } from '../../components/AppUI';
+import { Button, Card, Icon, Label, Mascot } from '../../components/AppUI';
 
 type SetProfile = (update: (profile: Profile) => Profile) => void;
 
@@ -34,7 +37,7 @@ export function MissionWorkspace({
     <div className="mission-flow mission-workspace">
       {top('')}
       <h1 className="mt-3 text-[28px] font-extrabold leading-[1.05] tracking-[-.04em]">
-        {mission.id === 'campaign' ? <>Create a Marketing<br />Campaign</> : mission.title}
+        {mission.title}
       </h1>
       <p className="mt-2 text-[15px] text-[#5B6980]">
         {steps.length} / {mission.steps.length} Steps completed
@@ -87,9 +90,9 @@ export function MissionWorkspace({
         <>
           <Button
             variant="navy"
-            disabled={steps.length < mission.steps.length}
             onClick={() => {
-              setProfile((p) => completeMission(p, mission.id, mission.xp));
+              // ponytail: Continue simulates remaining work for the jury demo; require real submissions in production.
+              setProfile((p) => completeMission({ ...p, steps: { ...p.steps, [mission.id]: mission.steps.map((_, i) => i) } }, mission.id, mission.xp));
               go('reflection');
             }}
           >
@@ -128,7 +131,7 @@ export function MissionReflection({
   setAgain: (value: string) => void;
   setError: (value: string) => void;
   setProfile: SetProfile;
-  go: (screen: 'direction') => void;
+  go: (screen: 'mission-direction' | 'discover') => void;
   top: (name: string) => ReactNode;
   bottom: (content: ReactNode) => ReactNode;
 }) {
@@ -173,9 +176,9 @@ export function MissionReflection({
         />
       </label>
       <div className="mt-5">
-        <h2 className="mb-2 text-[14px] font-extrabold">Would you like to try something similar?</h2>
+        <h2 className="mb-2 text-[14px] font-extrabold">Do you sure to choose this path?</h2>
         <div className="grid grid-cols-2 gap-2">
-          {['Yes', 'Not sure yet'].map((x) => (
+          {['Yes, I choose this path', 'No, Explore Again'].map((x) => (
             <button type="button" key={x} aria-pressed={again === x} onClick={() => { setAgain(x); setError(''); }} className="similar-option">
               {x}
             </button>
@@ -199,12 +202,13 @@ export function MissionReflection({
             };
             setProfile((p) => ({
               ...p,
+              direction: again === 'Yes, I choose this path' ? mission.field : p.direction,
               reflections: [
                 ...p.reflections.filter((r) => r.mission !== mission.id),
                 result,
               ],
             }));
-            go('direction');
+            go(again === 'No, Explore Again' ? 'discover' : 'mission-direction');
           }}
         >
           See What We Learned
@@ -215,96 +219,25 @@ export function MissionReflection({
 }
 
 export function Missions({
-  suggested,
-  headline,
-  chooseMission,
-  onProgress,
-  missionCard,
-}: {
-  suggested: Mission;
-  headline: (text: string, sub: string) => ReactNode;
-  chooseMission: (id: string) => void;
-  onProgress: () => void;
-  missionCard: (mission: Mission) => ReactNode;
-}) {
-  return (
-    <div className="bg-white px-5 pt-5">
-      {headline(
-        'Don’t just imagine it. Try it.',
-        'Real experiences help you understand what fits you.',
-      )}
-      <div className="mb-5 flex gap-2">
-        <Chip active>All</Chip>
-        <Chip onClick={() => chooseMission(suggested.id)}>For you</Chip>
-        <Chip onClick={onProgress}>Completed</Chip>
-      </div>
-      <Card onClick={() => chooseMission(suggested.id)} className="mb-5 overflow-hidden !p-0">
-        <div className="flex h-40 items-center justify-center bg-[#e8e4ff] text-purple"><Icon name={suggested.icon} size={92} /></div>
-        <div className="p-4"><h2 className="text-[19px] font-extrabold leading-tight">{suggested.title}</h2><p className="mt-2 text-xs font-bold text-navy/60">{fields.find(f => f.id === suggested.field)?.name} · Beginner</p><p className="mt-3 text-xs text-navy/70">{suggested.time} · +{suggested.xp} XP</p><p className="mt-2 text-[13px] text-navy/70">{suggested.goal}</p></div>
-      </Card>
-      <Button onClick={() => chooseMission(suggested.id)} className="mb-6">Start Mission</Button>
-      <h2 className="mb-3 text-[16px] font-extrabold">More to try</h2>
-      {missions.map(missionCard)}
-    </div>
-  );
-}
-
-export function MissionDetail({
-  mission,
   profile,
-  top,
-  headline,
-  sections,
-  onStart,
+  chooseMission,
 }: {
-  mission: Mission;
   profile: Profile;
-  top: (title: string) => ReactNode;
-  headline: (text: string, sub: string) => ReactNode;
-  sections: (items: string[]) => ReactNode;
-  onStart: () => void;
+  chooseMission: (id: string) => void;
 }) {
-  return (
-    <div className="relative h-full bg-white px-5 pt-3">
-      {top('Mission details')}
-      <div className="mt-4 flex h-36 items-center justify-center rounded-[22px] bg-[#e8e4ff] text-purple"><Icon name={mission.icon} size={84} /></div>
-      <div className="mt-5">{headline(mission.title, mission.goal)}</div>
-      <div className="mb-5 flex gap-2">
-        {sections([
-          fields.find((f) => f.id === mission.field)?.name || '',
-          'Beginner',
-          mission.time,
-          `+${mission.xp} XP`,
-        ])}
-      </div>
-      <Label>WHAT YOU’LL DO</Label>
-      <div className="space-y-2">
-        {mission.steps.map((s, i) => (
-          <div
-            key={s}
-            className="flex items-center gap-3 rounded-xl bg-white p-3 text-xs font-bold"
-          >
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-lime">
-              {i + 1}
-            </span>
-            {s}
-          </div>
-        ))}
-      </div>
-      <div className="mt-5">
-        <Label>SKILLS YOU’LL EXPLORE</Label>
-        {sections(mission.skills)}
-      </div>
-      <div className="mt-6 pb-[max(20px,env(safe-area-inset-bottom))]">
-        <Button onClick={onStart}>
-          {profile.completed.includes(mission.id)
-            ? 'View Mission'
-            : 'Start Mission'}{' '}
-          <ArrowRight size={17} />
-        </Button>
-      </div>
-    </div>
-  );
+  const [filter, setFilter] = useState('All');
+  const results = missions.filter(m => filter === 'All' || (filter === 'For you' ? m.id === 'campaign' : profile.completed.includes(m.id)));
+  return <section className="explore-journey mission-list" aria-label="Mission list">
+    <h1>Don’t just imagine it.<br />Try it.</h1>
+    <p className="explore-lead">Real experiences help you understand what fits you.</p>
+    <div className="explore-filters !grid-cols-3">{['All', 'For you', 'Completed'].map(value => <button type="button" key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{value}</button>)}</div>
+    <div className="possibility-list">{results.map(m => <button type="button" key={m.id} className="possibility-card mission-list-card" onClick={() => chooseMission(m.id)}>
+      <span className="possibility-icon" data-field={m.field}><Icon name={m.icon} size={27} /></span>
+      <span className="min-w-0 flex-1"><strong>{m.title}</strong><span className="possibility-description">{fields.find(f => f.id === m.field)?.name} · Beginner</span><span className="mission-list-meta"><span><Clock size={14} />{m.time}</span><span><Sparkle size={14} />+{m.xp} XP</span></span>{m.id === 'campaign' && <span className="possibility-signal">Demo example</span>}{profile.completed.includes(m.id) && <span className="mission-list-status">Completed</span>}</span>
+      <CaretRight size={18} className="shrink-0" />
+    </button>)}</div>
+    {!results.length && <p className="explore-body">No completed missions yet. Try the Marketing campaign first.</p>}
+  </section>;
 }
 
 export function Insight({

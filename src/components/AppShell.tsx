@@ -18,6 +18,7 @@ export type Screen =
   | 'reflection'
   | 'insight'
   | 'direction'
+  | 'mission-direction'
   | 'path'
   | 'recommend'
   | 'progress'
@@ -34,15 +35,11 @@ export function AppShell({
   go,
   children,
   modal,
-  missionFlow = false,
-  exploreFlow = false,
 }: {
   screen: Screen;
   go: (screen: Screen) => void;
   children: ReactNode;
   modal: ReactNode;
-  missionFlow?: boolean;
-  exploreFlow?: boolean;
 }) {
   const navVisible = ![
     'splash',
@@ -52,6 +49,8 @@ export function AppShell({
     'noidea',
   ].includes(screen);
   const isHome = screen === 'home';
+  const exploreFlow = ['explorer', 'explore', 'discover', 'field'].includes(screen);
+  const missionFlow = ['missions', 'mission', 'workspace', 'reflection', 'insight', 'mission-direction'].includes(screen);
   return (
     <div className="app-viewport bg-paper">
       <main className="app-shell" aria-label="GRIT app">
@@ -73,7 +72,7 @@ export function AppShell({
                 <Sparkle size={24} />
               </button>
             )}
-            <BottomNavigation screen={missionFlow ? 'workspace' : exploreFlow ? 'explore' : screen} go={go} />
+            <BottomNavigation screen={screen} go={go} />
           </>
         )}
         {modal}

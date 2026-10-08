@@ -15,6 +15,7 @@ import { fields, missions, type Field, type Mission } from '../../content';
 import { level, levelNames, type Profile, type Reflection } from '../../model';
 import { Achievements } from '../progress/Achievements';
 import { Button, Card, Icon, Label } from '../../components/AppUI';
+import { MatchBadge } from '../explore/journey';
 
 export function Direction({
   profile,
@@ -70,7 +71,7 @@ export function Direction({
           <span className="min-w-0 flex-1">
             <strong className="block text-[15px] font-extrabold">{field.name}</strong>
             <span className="mt-1 block text-[11px] leading-[1.35] text-[#5B6980]">{descriptions[field.id] || field.summary}</span>
-            <span className="mt-2 inline-block rounded-full bg-grit-lime px-2.5 py-1 text-[12px] font-bold" aria-label={mission.id === 'campaign' ? `${[89, 76, 72][i]}% match, reference prototype value` : undefined}>{mission.id === 'campaign' ? `${[89, 76, 72][i]}% match` : 'Worth exploring'}</span>
+            {mission.id === 'campaign' ? <MatchBadge value={[89, 76, 72][i]} /> : <span className="possibility-signal">Worth exploring</span>}
           </span>
           <ArrowRight size={20} className="shrink-0" aria-hidden="true" />
         </button>)}

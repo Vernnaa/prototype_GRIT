@@ -1,5 +1,5 @@
 import { Clock, Lightbulb, Star, UserCircle } from '@phosphor-icons/react';
-import type { Mission } from '../../../content';
+import { fields, type Mission } from '../../../content';
 
 export function NextStepCard({
   mission,
@@ -17,7 +17,7 @@ export function NextStepCard({
         id="dashboard-next-title"
         className="mb-[11px] mx-[5px] text-[19px] font-extrabold leading-6 text-grit-white"
       >
-        Your Next Step
+        {fields.find(field => field.id === mission.field)?.name || 'Marketing'}
       </h2>
       <div className="rounded-[15px] bg-grit-white p-[10px]">
         <div className="flex min-h-[70px] items-center gap-[11px]">
@@ -39,9 +39,7 @@ export function NextStepCard({
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="wrap-anywhere text-base font-extrabold leading-[1.2] tracking-[-.035em] text-grit-text">
-              {mission.id === 'campaign'
-                ? 'Try a Branding Challenge'
-                : mission.title}
+              {mission.title}
             </h3>
             <div className="mt-2 flex flex-wrap gap-x-[10px] gap-y-1 text-xs font-bold text-grit-navy">
               <span className="inline-flex items-center gap-1 whitespace-nowrap">

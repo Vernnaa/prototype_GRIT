@@ -19,7 +19,7 @@ const items = [
     id: 'missions',
     label: 'Missions',
     Icon: CalendarBlank,
-    screens: ['missions', 'mission', 'workspace', 'reflection', 'insight'],
+    screens: ['missions', 'mission', 'workspace', 'reflection', 'insight', 'mission-direction'],
   },
   {
     id: 'path',

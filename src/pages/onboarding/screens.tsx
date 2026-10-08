@@ -206,7 +206,7 @@ export function StartingPoint({
             value={profile.dream}
             onChange={(e) => update({ dream: e.target.value })}
           >
-            <option value="">Choose a direction to explore</option>
+            <option value="">Marketing — demo example</option>
             {fields.map((f) => (
               <option value={f.id} key={f.id}>
                 {f.name}
@@ -224,10 +224,7 @@ export function StartingPoint({
               setError('Choose a starting point.');
               return;
             }
-            if (profile.start === 'dream' && !profile.dream) {
-              setError('Choose a direction to explore.');
-              return;
-            }
+            if (profile.start === 'dream' && !profile.dream) update({ dream: 'marketing' });
             go(
               profile.start === 'none'
                 ? 'noidea'
@@ -261,8 +258,9 @@ export function Quiz({
 }) {
   const item = questions[q],
     choices = profile.answers[q];
-  const limit = item.maxSelections ?? 3;
-  return <ExploreQuestionPage currentQuestion={q + 1} totalQuestions={questions.length} title={item.title} instruction={item.instruction ?? `Select up to ${limit} options`} options={questionOptions(item.choices)} maxSelections={limit} selectedValues={choices} error={error} onBack={onBack} onSelectionChange={next => {
+  const limit = 1;
+  const demoChoices = ['Communicating', 'Creating', ...item.choices.filter(value => !['Communicating', 'Creating'].includes(value))];
+  return <ExploreQuestionPage currentQuestion={1} totalQuestions={questions.length} title={item.title} instruction="Choose one activity. We’ll use Marketing as this demo’s example." options={questionOptions(demoChoices)} maxSelections={limit} selectedValues={choices} error={error} onBack={onBack} onSelectionChange={next => {
     if (next.length > limit) { setError(`Choose up to ${limit} options.`); return; }
     setError('');
     setProfile(p => ({ ...p, answers: p.answers.map((values, index) => index === q ? next : values) }));

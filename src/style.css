@@ -178,18 +178,18 @@ button:active {
   letter-spacing: -0.04em;
 }
 .explore-journey h2 {
-  margin: 24px 0 12px;
-  font-size: 19px;
+  margin: 20px 0 10px;
+  font-size: 17px;
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.025em;
 }
-.explore-lead { margin: 12px 0 24px; font-size: 14px; line-height: 1.4; color: #58677a; }
+.explore-lead { margin: 12px 0 20px; font-size: 14px; line-height: 1.4; color: #58677a; }
 .explore-body { font-size: 14px; line-height: 1.4; color: #58677a; }
 .explore-interest {
   display: flex;
   min-width: 0;
-  min-height: 110px;
+  min-height: 104px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -198,7 +198,14 @@ button:active {
   border-radius: 15px;
   font-size: 12px;
 }
-.explore-interest span { font-size: 11px; color: #58677a; font-variant-numeric: tabular-nums; }
+.explore-interest span { font-size: 13px; font-variant-numeric: tabular-nums; }
+.explore-interest strong { font-size: 13px; font-weight: 800; }
+.explore-interest:first-child svg { color: #6557f5; }
+.explore-interest:nth-child(2) svg { padding: 3px; border-radius: 50%; background: #c8ff00; }
+.explore-interests { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.explore-profile-header { position: relative; }
+.explore-profile-robot { position: absolute; right: -5px; bottom: -15px; pointer-events: none; }
+.explorer-profile h1 { font-size: 29px; }
 .explore-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .explore-tags span {
   display: inline-flex;
@@ -207,13 +214,13 @@ button:active {
   padding: 6px 12px;
   border: 1px solid #e5e9ee;
   border-radius: 999px;
-  background: #f4f6f8;
-  color: #062b49;
-  font-size: 11px;
+  background: #f5f7f9;
+  color: #071d3b;
+  font-size: 12px;
   font-weight: 600;
 }
-[aria-label='Explore'] .explore-tags span { min-height: 40px; background: white; }
-.explore-support { display: flex; align-items: center; gap: 8px; margin: 24px 0 20px; padding: 10px; border-radius: 15px; background: #eae7ff; font-size: 12px; line-height: 1.35; }
+[aria-label='Explore'] .explore-tags span { min-height: 40px; background: white; font-size: 13px; padding: 6px 14px; }
+.explore-support { display: flex; align-items: center; gap: 8px; margin: 20px 0 16px; padding: 0 8px 0 0; border-radius: 15px; background: #eae7ff; font-size: 11px; line-height: 1.4; }
 .explore-primary, .explore-secondary {
   display: flex;
   width: 100%;
@@ -222,29 +229,61 @@ button:active {
   justify-content: center;
   border-radius: 16px;
   background: #c8ff00;
-  color: #062b49;
-  font-size: 14px;
+  color: #071d3b;
+  font-size: 15px;
   font-weight: 700;
 }
 .explore-secondary { border: 1.5px solid #062b49; background: white; }
 .explore-top { display: flex; align-items: center; justify-content: space-between; margin: -12px 0 12px; color: #062b49; }
 .explore-top button { display: flex; width: 44px; height: 44px; align-items: center; justify-content: center; }
-.explore-hero { display: flex; height: 140px; flex-direction: column; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; padding: 16px; border-radius: 13px; background: #f4f6f8; color: #58677a; text-align: center; font-size: 11px; }
+.explore-status { display: flex; width: 25px; height: 25px; align-items: center; justify-content: center; border-radius: 50%; background: #c8ff00; }
+.explore-hero { display: block; width: 100%; height: 140px; object-fit: cover; margin-top: 20px; border-radius: 13px; }
+.career-heading { display: flex; align-items: center; gap: 12px; }
+.career-heading > div { min-width: 0; }
+.career-heading .explore-tags { margin-top: 8px; gap: 5px; }
+.career-heading .explore-tags span { min-height: 29px; padding: 4px 9px; font-size: 10px; border-color: transparent; }
+.career-icon { display: flex; width: 56px; height: 56px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 50%; background: #6557f5; color: white; }
+.career-reasons { display: grid; gap: 8px; color: #58677a; font-size: 13px; }
+.career-reasons li { display: flex; align-items: center; gap: 10px; }
+.career-reasons svg { flex-shrink: 0; border-radius: 50%; padding: 2px; background: #071d3b; color: white; }
+.career-detail > .explore-tags { display: grid; grid-template-columns: 1fr 1fr; }
+.career-detail > .explore-tags span { justify-content: center; font-size: 11px; padding: 6px 8px; }
+.explore-actions { display: grid; gap: 8px; margin-top: 20px; }
+.discover-header { position: relative; }
+.discover-back { position: absolute; top: 0; right: -8px; display: flex; width: 36px; height: 36px; align-items: center; justify-content: center; }
+.discover-possibilities h1 { padding-right: 16px; }
 .explore-search { display: flex; height: 46px; align-items: center; gap: 8px; padding: 0 14px; border: 1px solid #e5e9ee; border-radius: 999px; }
 .explore-search input { width: 100%; min-width: 0; background: transparent; font-size: 13px; }
 .explore-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 16px 0; }
 .explore-filters button { min-width: 0; min-height: 38px; border-radius: 999px; background: #f4f6f8; color: #062b49; font-size: 12px; font-weight: 600; }
 .explore-filters button[aria-pressed='true'] { background: #062b49; color: white; }
-.possibility-card { display: flex; width: 100%; min-height: 110px; align-items: center; gap: 12px; padding: 12px; border: 1px solid #e5e9ee; border-radius: 15px; text-align: left; }
+.possibility-list { display: grid; gap: 10px; }
+.possibility-card { display: flex; width: 100%; min-height: 100px; align-items: center; gap: 12px; padding: 12px 10px; border: 1px solid #e5e9ee; border-radius: 15px; background: white; text-align: left; }
 .possibility-icon { display: flex; width: 48px; height: 48px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 12px; color: #062b49; }
-.possibility-card:first-child .possibility-icon { color: white; }
-.possibility-card strong { display: block; font-size: 14px; line-height: 1.2; }
-.possibility-description { display: block; margin-top: 4px; color: #58677a; font-size: 11px; line-height: 1.35; }
-.possibility-signal { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 999px; background: #c8ff00; color: #062b49; font-size: 10px; font-weight: 700; }
+.possibility-icon { background: #eae7ff; color: #6557f5; }
+.possibility-icon[data-field='marketing'] { background: #6557f5; color: white; }
+.possibility-icon[data-field='technology'], .possibility-icon[data-field='consulting'] { background: #062b49; color: #c8ff00; }
+.possibility-icon[data-field='healthcare'], .possibility-icon[data-field='engineering'] { background: #c8ff00; color: #071d3b; }
+.possibility-card strong { display: block; font-size: 13px; font-weight: 800; line-height: 1.2; }
+.possibility-description { display: block; margin-top: 4px; color: #58677a; font-size: 12px; line-height: 1.3; }
+.possibility-signal { display: inline-block; margin-top: 6px; padding: 3px 10px; border-radius: 999px; background: #c8ff00; color: #071d3b; font-size: 12px; font-weight: 800; }
 .try-mission-card { overflow: hidden; border: 1px solid #e5e9ee; border-radius: 15px; }
-.try-mission-card .explore-hero { margin: 0; border-radius: 0; }
+.try-mission-card .explore-hero { margin: 0; border-radius: 0; object-position: center 65%; }
+.mission-preview-content { padding: 16px 14px 12px; }
+.mission-preview-content h2 { max-width: 290px; margin: 0 0 12px; font-size: 24px; line-height: 1.12; }
+.mission-preview-meta { display: flex; align-items: center; gap: 32px; margin: 16px 0; font-size: 14px; }
+.mission-preview-meta span, .mission-preview-meta strong { display: flex; align-items: center; gap: 8px; }
+.mission-preview-content h3 { margin: 20px 0 8px; font-size: 14px; font-weight: 800; }
+.mission-preview-content .explore-tags { gap: 6px; }
+.mission-preview-content .explore-tags span { padding: 6px 10px; font-size: 11px; }
+.mission-list-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; font-size: 11px; color: #58677a; }
+.mission-list-meta > span { display: inline-flex; align-items: center; gap: 4px; }
+.mission-list-status { display: inline-block; margin: 6px 0 0 8px; font-size: 11px; color: #58677a; }
+.try-mission > .explore-primary { margin-top: 12px; }
 @media (max-width: 359px) {
   .explore-journey { padding-right: 16px; padding-left: 16px; }
+  .explorer-profile h1 { font-size: 26px; }
+  .explore-profile-robot { width: 72px !important; height: 72px !important; right: 0; bottom: -5px; }
   .explore-filters { gap: 4px; }
   .possibility-card { gap: 8px; padding: 10px; }
   .possibility-icon { width: 42px; height: 42px; }
@@ -258,6 +297,12 @@ button:active {
   background: #ffffff;
   color: #071d3b;
 }
+.mission-workspace h1 { max-width: 300px; font-size: 28px; }
+.mission-flow p, .mission-step-card small, .mission-reflection textarea { color: #58677a; }
+.mission-reflection .similar-option { padding: 8px; font-size: 12px; line-height: 1.3; }
+.mission-direction h1 { font-size: 29px; }
+.mission-direction-card > span > span:first-of-type { font-size: 13px; }
+.mission-flow :focus-visible, .explore-journey :focus-visible { outline-color: #6557f5; }
 .mission-flow .inset-action {
   position: static;
   margin: auto 0 0;

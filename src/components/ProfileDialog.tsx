@@ -76,7 +76,7 @@ export function ProfileDialog({
         ) : modal === 'Settings' ? (
           <div className="space-y-3">
             <p className="text-sm text-navy/65">Manage your browser-only GRIT prototype.</p>
-            {['Notifications', 'Privacy', 'Parent view', 'Restart prototype'].map(label => <Button key={label} variant="outline" onClick={() => openSetting(label)}>{label}</Button>)}
+            {['Notifications', 'Privacy', 'Parent view', 'Reset Prototype'].map(label => <Button key={label} variant="outline" onClick={() => openSetting(label)}>{label}</Button>)}
           </div>
         ) : modal === 'reset' ? (
           <>
